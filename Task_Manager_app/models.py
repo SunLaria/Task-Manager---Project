@@ -1,8 +1,11 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.conf import settings
+
 
 
 class Category(models.Model):
+    User = models.ForeignKey(User, on_delete=models.CASCADE)
     Name = models.CharField(max_length=100)
 
     def __str__(self) -> str:
@@ -19,7 +22,7 @@ TAGS_CHOICES = (
 class Task(models.Model):
     Name = models.CharField(max_length=100)
     Date = models.DateField()
-    Category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    Category = models.ForeignKey(Category,on_delete=models.CASCADE)
     Tag = models.CharField(max_length=16,choices=TAGS_CHOICES, default="no-priority")
     Description = models.TextField(blank=True)
     Created_at = models.DateField(auto_now_add=True)
