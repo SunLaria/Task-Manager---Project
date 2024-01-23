@@ -16,6 +16,7 @@ from django import db
 from django.http import JsonResponse as DjangoJsonResponse
 from Task_Manager_app.models import Task, Category
 from django.contrib.auth.models import User
+from starlette.middleware.cors import CORSMiddleware
 
 
 
@@ -58,6 +59,18 @@ class Task_Schema(BaseModel):
 
 app = FastAPI(title="Task Api",description="The API I Made For Task Manager")
 
+origins = [
+    "http://localhost:*",
+    "http://localhost:8000",
+    "http://localhost:7000",
+]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"], # Allows all origins
+    allow_credentials=True,
+    allow_methods=["*"], # Allows all methods
+    allow_headers=["*"], # Allows all headers
+)
 
 
 @app.exception_handler(RequestValidationError)

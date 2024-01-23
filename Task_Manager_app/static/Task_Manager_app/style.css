@@ -1,0 +1,27 @@
+#main{
+    padding: 30px;    
+}
+
+#user_login_logout{
+    position: absolute;
+    right: 80px;
+    top: 80px
+}
+
+/* table div */
+#table-content{
+    width: 100%;
+    margin-top: 5%;
+    text-align: center;
+}
+
+#Task-Table{
+    text-align: center;
+    display: inline-block;
+    border: solid black;
+}
+
+th, td {
+    padding: 10px;
+    border: solid black;
+}

@@ -40,3 +40,6 @@ class Task(models.Model):
                 "Created_at":self.Created_at,
                 "Updated_at":self.Updated_at,
                 "User":self.User.id}
+    
+
+
