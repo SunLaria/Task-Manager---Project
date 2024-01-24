@@ -21,7 +21,19 @@
     border: solid black;
 }
 
-th, td {
+#Task-Table th, #Task-Table td {
     padding: 10px;
+    border: solid black;
+    user-select: none;
+    cursor: pointer;
+
+}
+
+#Task-Table tr:not(:first-child):hover{
+    background-color: grey;
+    cursor: pointer;
+}
+
+#task-tab-table{
     border: solid black;
 }

@@ -20,17 +20,7 @@ from starlette.middleware.cors import CORSMiddleware
 
 
 
-#   "id": 17,
-#       "Name": "Clean bad",
-#       "Date": "2024-01-28",
-#       "Category": "home",
-#       "Tag": "high-priority",
-#       "Description": "Asap",
-#       "Created_at": "2024-01-22",
-#       "Updated_at": "2024-01-22",
-#       "User": 1
-#     }
-#   ]
+
 
 
 class Task_Schema(BaseModel):
@@ -86,7 +76,7 @@ def create_task(user_id:Annotated[int,Body(ge=1,example=1)] ,task:Task_Schema):
         new_task = Task(Name=data["Name"],Date=data["Date"],Category=User.objects.get(id=user_id).category_set.get_or_create(Name=data["Category"])[0],Tag=data["Tag"],Description=data["Description"],User=User.objects.get(id=user_id))
         new_task.clean_fields()
         new_task.save()
-        return JSONResponse(content={"detail":"Task Creation Succesfull"},status_code=status.HTTP_201_CREATED)
+        return JSONResponse(content={"detail":"Task Creation Successful"},status_code=status.HTTP_201_CREATED)
     except:
         raise HTTPException(status_code=status.HTTP_405_METHOD_NOT_ALLOWED, detail="Task Creation Failed")
     
@@ -97,15 +87,18 @@ def update_task(user_id:Annotated[int,Body(ge=1,example=1)], task_id:Annotated[i
         task_db=Task.objects.get(id=task_id)
         [setattr(task_db, x, y) if x!="Category" else setattr(task_db, x, User.objects.get(id=user_id).category_set.get_or_create(Name=y)[0]) for x,y in update_data.items()]
         task_db.save()
-        return JSONResponse(content={"detail":"Task Update Succesfull"},status_code=status.HTTP_202_ACCEPTED)
+        return JSONResponse(content={"detail":"Task Update Successful"},status_code=status.HTTP_202_ACCEPTED)
     except:
         raise HTTPException(status_code=status.HTTP_405_METHOD_NOT_ALLOWED, detail="Task Update Failed")
     
 @app.delete("/delete-task",status_code = status.HTTP_200_OK, tags=["Task"])
 def delete_task(tasks_id:Annotated[list[int],Body()]):
     try:
-        [Task.objects.get(id=tasks_id[i]).delete() for i in range(len(tasks_id))]
-        return JSONResponse(content={"detail":"Task Delete Succesfull"},status_code=status.HTTP_200_OK)
+        if len(tasks_id) >= 1:
+            [Task.objects.get(id=tasks_id[i]).delete() for i in range(len(tasks_id))]
+            return JSONResponse(content={"detail":"Task Delete Successful"},status_code=status.HTTP_200_OK)
+        else:
+            return JSONResponse(content={"detail":"No Tasks To Delete"},status_code=status.HTTP_405_METHOD_NOT_ALLOWED)
     except:
         raise HTTPException(status_code=status.HTTP_405_METHOD_NOT_ALLOWED, detail="Task Delete Failed")
 
@@ -120,15 +113,15 @@ def get_tasks(user_id:Annotated[int | None, Query(ge=1,example=1)] = None, task_
                 return {"result":"No Data Found"}
         except:
             raise HTTPException(status_code=status.HTTP_405_METHOD_NOT_ALLOWED, detail="Failed To Retrive Data From DB")
-    elif user_id and tag:
-        try:
-            result = {"result":[i.to_dict() for i in Task.objects.filter(User=user_id,Tag=tag)]}
-            if len(result["result"]) > 0:
-                return result
-            else:
-                return {"result":"No Data Found"}
-        except:
-            raise HTTPException(status_code=status.HTTP_405_METHOD_NOT_ALLOWED, detail="Failed To Retrive Data From DB")
+    # elif user_id and tag:
+    #     try:
+    #         result = {"result":[i.to_dict() for i in Task.objects.filter(User=user_id,Tag=tag)]}
+    #         if len(result["result"]) > 0:
+    #             return result
+    #         else:
+    #             return {"result":"No Data Found"}
+    #     except:
+    #         raise HTTPException(status_code=status.HTTP_405_METHOD_NOT_ALLOWED, detail="Failed To Retrive Data From DB")
    
     elif user_id:
         try:

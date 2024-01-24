@@ -3,11 +3,11 @@ from django.http import HttpResponse
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.decorators import login_required
-from .forms import LoginForm
+from .forms import LoginForm,TaskModelForm
 
 @login_required(login_url="/login")
 def home(request):
-    return render(request,"Task_Manager_app/index.html")
+    return render(request,"Task_Manager_app/index.html",{"form":TaskModelForm(user_id=request.user.id)})
 
 
 def login_view(request):
