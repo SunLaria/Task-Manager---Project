@@ -1,4 +1,4 @@
-API_URL = "http://127.0.0.1:7000" ;
+API_URL = "http://127.0.0.1:7000";
 const user_id = JSON.parse(document.getElementById('user_id').textContent);
 
 
@@ -55,28 +55,28 @@ function createTaskDB(){
 
 // delete task function
 function DeleteTask(list){
-    let taskIDList = Array.from(list)
+    let taskIDList = Array.from(list);
     axios.delete(API_URL+"/delete-task", { data: taskIDList })
     .then((response) =>{
-        console.log(response.data)
+        console.log(response.data);
     })
 }
 
 
 // update table from DB function
 function UpdateTableDB(requestParmaters){
-    request = getTasksDB(requestParmaters)
+    request = getTasksDB(requestParmaters);
     request.then((response) => {
         if (response.data.result!="No Data Found"){
             if(document.getElementById("no-tasks-message")){
                 document.getElementById("no-tasks-message").remove();
             }
-            buildTable(response.data.result)
+            buildTable(response.data.result);
         } else {
-            let message = document.createElement("p")
+            let message = document.createElement("p");
             message.id="no-tasks-message";
             message.innerHTML="No Tasks";
-            Table.appendChild(message);
+            document.getElementById("Task-Table").appendChild(message);
         }
     })
 }
@@ -87,9 +87,9 @@ function buildTable(tasks){
     for (let i = 1; i < rows.length; i++) {
         rows[i].remove();
     }
-    const Table = document.querySelector("tbody")
-    const Tasks = Array.from(tasks)
-    const fields = ["Name","Date","Category","Tag"]
+    const Table = document.querySelector("tbody");
+    const Tasks = Array.from(tasks);
+    const fields = ["Name","Date","Category","Tag"];
     Tasks.map(function(e){
         let table_row = document.createElement("tr");
         fields.map((d)=>{
@@ -97,20 +97,20 @@ function buildTable(tasks){
             td.innerHTML=e[d];
             table_row.appendChild(td);
         })
-        table_row.id=e['id']
+        table_row.id=e['id'];
         table_row.addEventListener('click',()=>{
             if(chosenTasks){
                 if (table_row.style.backgroundColor) {
-                    chosenTasks.delete(Number(table_row.id))
-                    table_row.style.backgroundColor=""
+                    chosenTasks.delete(Number(table_row.id));
+                    table_row.style.backgroundColor="";
                 } else {
                     chosenTasks.add(Number(table_row.id));
-                    table_row.style.backgroundColor="grey"
+                    table_row.style.backgroundColor="grey";
                 }
             }
         })
         table_row.addEventListener('dblclick',()=>{
-            taskInfoTab(Number(table_row.id))
+            taskInfoTab(Number(table_row.id));
         })
         Table.appendChild(table_row);
     })
@@ -119,68 +119,71 @@ function buildTable(tasks){
 
 
 // table header sorter
-function tableHeaderSort(field){
-    requestData={user_id:user_id}
+function tableHeaderSort(field,bool){
+    requestData={user_id:user_id};
     getTasksDB(requestData)
     .then((response)=>{
-        let tasks=Array.from(response.data.result)
+        let tasks=Array.from(response.data.result);
         if (field == 'Date') {
-            tasks.sort((i,j)=>(new Date(i).getTime()  - new Date(j).getTime()))
-            buildTable(tasks)
+            tasks.sort(function(a,b){
+                a = a["Date"].split("-").join("");
+                b = b["Date"].split("-").join("");
+                return a > b ? 1 : a < b ? -1 : 0;
+            })
+            
         } else {
-            tasks.sort((i,j)=>(i[field].localeCompare(j[field])))
-            buildTable(tasks)
+            tasks.sort((i,j)=>(i[field].localeCompare(j[field])));
         }
+        if (bool) {
+            buildTable(tasks);
+        } else {
+            buildTable(tasks.reverse());
+        }
+        
     })
 }
 
 
 // assign tableHeaderSort functions into th elements in table
 function tableHeaderSortAsign() {
-    const tableHeaders = document.getElementsByTagName('th')
+    const tableHeaders = document.getElementsByTagName('th');
     Array.from(tableHeaders).map(th=>{
+        let ascend = true;
         th.addEventListener('click',()=>{
-            tableHeaderSort(th.innerText)
+            if (ascend){
+                tableHeaderSort(th.innerText, true);
+                ascend = false;
+            } else {
+                tableHeaderSort(th.innerText, false);
+                ascend = true;
+            }
         })
     })
 }
 
 
 
-// // table table header sort -- StackOverFlow
-// const getCellValue = (tr, idx) => tr.children[idx].innerText || tr.children[idx].textContent;
-// const comparer = (idx, asc) => (a, b) => ((v1, v2) => 
-//     v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2) ? v1 - v2 : v1.toString().localeCompare(v2)
-//     )(getCellValue(asc ? a : b, idx), getCellValue(asc ? b : a, idx));
-// document.querySelectorAll('th').forEach(th => th.addEventListener('click', (() => {
-//     const table = th.closest('table');
-//     Array.from(table.querySelectorAll('tr:nth-child(n+2)'))
-//         .sort(comparer(Array.from(th.parentNode.children).indexOf(th), this.asc = !this.asc))
-//         .forEach(tr => table.appendChild(tr) );
-// })));
-
-
 // delete button function creation
 function DeleteButton(){
-    let deleteButton = document.createElement("button")
-    deleteButton.innerHTML="Delete"
-    deleteButton.id="delete-button"
+    let deleteButton = document.createElement("button");
+    deleteButton.innerHTML="Delete";
+    deleteButton.id="delete-button";
     deleteButton.addEventListener('click',()=>{
         if (chosenTasks.size > 0){
             if (confirm("Press a button!")){
                 DeleteTask(chosenTasks);
                 Array.from(chosenTasks).map((id)=>{
-                    document.getElementById(id).remove()
+                    document.getElementById(id).remove();
                 })
-                document.getElementById("delete-button").remove()
-                document.getElementById('select-button').innerHTML="Select"
-                selectMode = false
-                chosenTasks = undefined
+                document.getElementById("delete-button").remove();
+                document.getElementById('select-button').innerHTML="Select";
+                selectMode = false;
+                chosenTasks = undefined;
 
             }
         }
     })
-    document.getElementById("table-content").append(deleteButton)
+    document.getElementById("table-content").append(deleteButton);
 }
 
 
@@ -189,28 +192,28 @@ function DeleteButton(){
 // task-info tab creation:
 function taskInfoTab(task_id){
     if (document.getElementById("task-info-tab")) {
-        document.getElementById("task-info-tab").remove()
+        document.getElementById("task-info-tab").remove();
     }
-    let taskInfoTab = document.createElement("div")
-    taskInfoTab.id="task-info-tab"
-    let taskInfoTable = document.createElement("table")
-    taskInfoTable.id="task-tab-table"
-    let fields = ['Name','Date','Category','Tag','Description','Created_at','Updated_at']
-    requestData={task_id:Number(task_id)}
+    let taskInfoTab = document.createElement("div");
+    taskInfoTab.id="task-info-tab";
+    let taskInfoTable = document.createElement("table");
+    taskInfoTable.id="task-tab-table";
+    let fields = ['Name','Date','Category','Tag','Description','Created_at','Updated_at'];
+    requestData={task_id:Number(task_id)};
     getTasksDB(requestData).then((response)=>{
         for (let i = 0; i < fields.length; i++) {
             let tableRow = document.createElement("tr");
             let collumnName = document.createElement("td");
             if (fields[i] == 'Created_at'){
-                collumnName.innerHTML='Created at:'
+                collumnName.innerHTML='Created at:';
             } else if (fields[i] == 'Updated_at') {
-                collumnName.innerHTML='Updated at:'
+                collumnName.innerHTML='Updated at:';
             } else {
                 collumnName.innerHTML=`${fields[i]}:`;
             }
             tableRow.appendChild(collumnName);
             let task_data = document.createElement("td");
-            task_data.id=`task-tab-${fields[i]}`
+            task_data.id=`task-tab-${fields[i]}`;
             task_data.innerHTML=response.data.result[0][fields[i]];
             tableRow.appendChild(task_data);
             taskInfoTable.appendChild(tableRow);
@@ -233,44 +236,44 @@ function taskInfoTab(task_id){
 // task-info tab update button
 let updateMode
 function taskInfoUpdateButton(){
-    let updateButton = document.createElement("button")
-    updateButton.innerHTML="Update"
-    updateButton.id="update-button"
+    let updateButton = document.createElement("button");
+    updateButton.innerHTML="Update";
+    updateButton.id="update-button";
     updateButton.addEventListener('click',()=>{
-        console.log(updateButton)
+        console.log(updateButton);
         
     })
-    document.getElementById("task-info-tab").appendChild(updateButton)
+    document.getElementById("task-info-tab").appendChild(updateButton);
 }
 
 
 // task-info tab delete button
 function taskInfoDeleteButton(task_id){
-    let deleteButton = document.createElement("button")
-    deleteButton.innerHTML="Delete"
-    deleteButton.id="delete-button"
+    let deleteButton = document.createElement("button");
+    deleteButton.innerHTML="Delete";
+    deleteButton.id="delete-button";
     deleteButton.addEventListener('click',()=>{
-        console.log(deleteButton)
+        console.log(deleteButton);
         if (confirm("Press a button!")){
             DeleteTask([task_id]);
         }
-        document.getElementById('task-info-tab').remove()
-        document.getElementById(task_id).remove()
+        document.getElementById('task-info-tab').remove();
+        document.getElementById(task_id).remove();
     })
-    document.getElementById("task-info-tab").appendChild(deleteButton)
+    document.getElementById("task-info-tab").appendChild(deleteButton);
 }
 
 
 // task-info tab cancel button
 function taskInfoCancelButton(){
-    let cancelButton = document.createElement("button")
-    cancelButton.innerHTML="Cancel"
-    cancelButton.id="cancel-button"
+    let cancelButton = document.createElement("button");
+    cancelButton.innerHTML="Cancel";
+    cancelButton.id="cancel-button";
     cancelButton.addEventListener('click',()=>{
         console.log(cancelButton);
         document.getElementById('task-info-tab').remove();
     })
-    document.getElementById("task-info-tab").appendChild(cancelButton)
+    document.getElementById("task-info-tab").appendChild(cancelButton);
 }
 
 
@@ -278,37 +281,37 @@ function taskInfoCancelButton(){
 let chosenTasks
 let selectMode
 function createSelectButton(){
-    let selectButton = document.createElement("button")
-    selectButton.innerHTML="Select"
-    selectButton.id="select-button"
-    selectMode=false
+    let selectButton = document.createElement("button");
+    selectButton.innerHTML="Select";
+    selectButton.id="select-button";
+    selectMode=false;
     selectButton.addEventListener('click',()=>{
         if(selectMode){
             Array.from(chosenTasks).map(row_id=>{
-                document.getElementById(row_id).style.backgroundColor=""
+                document.getElementById(row_id).style.backgroundColor="";
             })
-            document.getElementById("delete-button").remove()
-            selectButton.innerHTML="Select"
-            selectMode = false
-            chosenTasks = undefined
+            document.getElementById("delete-button").remove();
+            selectButton.innerHTML="Select";
+            selectMode = false;
+            chosenTasks = undefined;
         } else {
-            DeleteButton()
-            selectButton.innerHTML="Unselect"
-            chosenTasks = new Set()
-            selectMode = true
+            DeleteButton();
+            selectButton.innerHTML="Unselect";
+            chosenTasks = new Set();
+            selectMode = true;
         }
     })
-    document.getElementById("table-content").append(selectButton)
+    document.getElementById("table-content").append(selectButton);
 }
 
 
 // main function
 function Main(){
     // task rows choosen set - for multiple delete
-    tableHeaderSortAsign()
-    requestData={user_id:user_id}
+    tableHeaderSortAsign();
+    requestData={user_id:user_id};
     UpdateTableDB(requestData);
-    createSelectButton()
+    createSelectButton();
     
     // create button - post to api todo: !!!!! create with dom -----!!!!!
     document.getElementById("Create_button").addEventListener("click",function(){
