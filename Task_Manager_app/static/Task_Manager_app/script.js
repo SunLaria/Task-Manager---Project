@@ -47,7 +47,7 @@ function createTaskDB(){
         document.getElementById("id_Description").value="";
         document.getElementById("id_Tag").value="";
         requestData={user_id:user_id}
-        UpdateTable(requestData);
+        UpdateTableDB(requestData);
     })
 }
 
@@ -63,45 +63,15 @@ function DeleteTask(list){
 }
 
 
-// update table function
-function UpdateTable(requestParmaters){
+// update table from DB function
+function UpdateTableDB(requestParmaters){
     request = getTasksDB(requestParmaters)
     request.then((response) => {
-        const Table = document.querySelector("tbody")
         if (response.data.result!="No Data Found"){
             if(document.getElementById("no-tasks-message")){
-            document.getElementById("no-tasks-message").remove();
+                document.getElementById("no-tasks-message").remove();
             }
-            let rows = Array.from(document.getElementsByTagName("tr"));
-            for (let i = 1; i < rows.length; i++) {
-                rows[i].remove();
-            }
-            const Tasks = Array.from(response.data.result)
-            const fields = ["Name","Date","Category","Tag"]
-            Tasks.map(function(e){
-                let table_row = document.createElement("tr");
-                fields.map((d)=>{
-                    let td = document.createElement("td");
-                    td.innerHTML=e[d];
-                    table_row.appendChild(td);
-                })
-                table_row.id=e['id']
-                table_row.addEventListener('click',()=>{
-                    if(chosenTasks){
-                        if (table_row.style.backgroundColor) {
-                            chosenTasks.delete(Number(table_row.id))
-                            table_row.style.backgroundColor=""
-                         } else {
-                            chosenTasks.add(Number(table_row.id));
-                            table_row.style.backgroundColor="grey"
-                        }
-                    }
-                })
-                table_row.addEventListener('dblclick',()=>{
-                    taskInfoTab(Number(table_row.id))
-                })
-                Table.appendChild(table_row);
-            })
+            buildTable(response.data.result)
         } else {
             let message = document.createElement("p")
             message.id="no-tasks-message";
@@ -111,17 +81,70 @@ function UpdateTable(requestParmaters){
     })
 }
 
+// build the table from tasks parameter
+function buildTable(tasks){
+    let rows = Array.from(document.getElementsByTagName("tr"));
+    for (let i = 1; i < rows.length; i++) {
+        rows[i].remove();
+    }
+    const Table = document.querySelector("tbody")
+    const Tasks = Array.from(tasks)
+    const fields = ["Name","Date","Category","Tag"]
+    Tasks.map(function(e){
+        let table_row = document.createElement("tr");
+        fields.map((d)=>{
+            let td = document.createElement("td");
+            td.innerHTML=e[d];
+            table_row.appendChild(td);
+        })
+        table_row.id=e['id']
+        table_row.addEventListener('click',()=>{
+            if(chosenTasks){
+                if (table_row.style.backgroundColor) {
+                    chosenTasks.delete(Number(table_row.id))
+                    table_row.style.backgroundColor=""
+                } else {
+                    chosenTasks.add(Number(table_row.id));
+                    table_row.style.backgroundColor="grey"
+                }
+            }
+        })
+        table_row.addEventListener('dblclick',()=>{
+            taskInfoTab(Number(table_row.id))
+        })
+        Table.appendChild(table_row);
+    })
+}
 
+
+
+// table header sorter
 function tableHeaderSort(field){
     requestData={user_id:user_id}
     getTasksDB(requestData)
     .then((response)=>{
+        let tasks=Array.from(response.data.result)
         if (field == 'Date') {
-            
+            tasks.sort((i,j)=>(new Date(i).getTime()  - new Date(j).getTime()))
+            buildTable(tasks)
+        } else {
+            tasks.sort((i,j)=>(i[field].localeCompare(j[field])))
+            buildTable(tasks)
         }
     })
-
 }
+
+
+// assign tableHeaderSort functions into th elements in table
+function tableHeaderSortAsign() {
+    const tableHeaders = document.getElementsByTagName('th')
+    Array.from(tableHeaders).map(th=>{
+        th.addEventListener('click',()=>{
+            tableHeaderSort(th.innerText)
+        })
+    })
+}
+
 
 
 // // table table header sort -- StackOverFlow
@@ -282,9 +305,9 @@ function createSelectButton(){
 // main function
 function Main(){
     // task rows choosen set - for multiple delete
-    
+    tableHeaderSortAsign()
     requestData={user_id:user_id}
-    UpdateTable(requestData);
+    UpdateTableDB(requestData);
     createSelectButton()
     
     // create button - post to api todo: !!!!! create with dom -----!!!!!
