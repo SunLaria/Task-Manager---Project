@@ -1,6 +1,140 @@
 API_URL = "http://127.0.0.1:7000";
+
+// user_id from django render
 const user_id = JSON.parse(document.getElementById('user_id').textContent);
 
+
+
+// copy img functions, return element
+function copyImg(id,bool){
+    if (bool) {
+        let img = document.getElementById('img-tick').cloneNode(true);
+        img.id = id;
+        img.hidden=false;
+        return img
+    } else {
+        let img = document.getElementById('img-x').cloneNode(true);
+        img.id = id;
+        img.hidden=false;
+        return img
+    }
+}
+
+// register password validations
+function passwordValidation(field){
+    if (field == 'id_password1' || "id_password2"){
+        if (document.getElementById("id_password1").value == document.getElementById("id_password2")) {
+            return true
+        } else {
+            return false
+        }
+    } else {
+        return true
+    }
+}
+
+
+// check register form inputs
+let formStatus=false;
+function checkRegisterInputs(){
+    const register_inputs = Array.from(document.getElementById("register-form")).slice(1,5);
+    for (let i = 0; i < register_inputs.length; i++) {
+        if (register_inputs[i].checkValidity()) {
+            formStatus=true;
+            if (register_inputs[i].id == "id_password2") {
+                if (document.getElementById("id_password2").value != document.getElementById("id_password1").value) {
+                    formStatus=false;
+                    break;
+                }
+            }
+        } else {
+            formStatus=false;
+            break;
+        }
+    }
+    if (formStatus) {
+        document.getElementById("register-button").disabled=false;
+    } else {
+        document.getElementById("register-button").disabled=true;
+    }
+}
+
+
+// register form input validations
+let passMatch;
+let notEmpty;
+function registerInputValidation(){
+    const register_inputs = Array.from(document.getElementById("register-form")).slice(1,5);
+    register_inputs.map((input)=>{
+        input.addEventListener('input',()=>{
+            passMatch=true;
+            if (input.id == "id_password2") {
+                if (document.getElementById("id_password2").value == document.getElementById("id_password1").value) {
+                     passMatch = true;
+                 } else{
+                     passMatch = false;
+                 }
+            }
+            if(input.value==""){
+                notEmpty=false
+            }else{
+                notEmpty=true
+            }
+            if (input.checkValidity() && passMatch && notEmpty){
+                    if (document.getElementById(`img-${input.id}`)){
+                        document.getElementById(`img-${input.id}`).remove();
+                    }
+                    let img = copyImg(`img-${input.id}`,true)
+                    input.parentElement.appendChild(img);
+            } else {
+                if (document.getElementById(`img-${input.id}`)){
+                    document.getElementById(`img-${input.id}`).remove();
+                }
+                let img = copyImg(`img-${input.id}`,false)
+                input.parentElement.appendChild(img);
+            }
+            if (input.id == "id_password1") {
+                if (document.getElementById("img-id_password2")){
+                    if (input.getAttribute('src')!="/Task_Manager_app/static/Task_Manager_app/icons8-tick-48.png"){
+                        if (document.getElementById("img-id_password2")){
+                            let imgParent = document.getElementById("img-id_password2").parentElement
+                            document.getElementById("img-id_password2").remove();
+                            let img = copyImg("img-id_password2",false)
+                            imgParent.appendChild(img);
+                        }   
+                    }
+                }
+            }
+            checkRegisterInputs()
+        })
+    })
+}
+
+// create register form clear button 
+function registerClearButton(){
+    let clearButton = document.createElement('button');
+    clearButton.id="register-clear-button"
+    clearButton.innerHTML="Clear"
+    clearButton.addEventListener('click',()=>{
+        const register_inputs = Array.from(document.getElementById("register-form")).slice(1,5);
+        register_inputs.map((input)=>{
+            input.value="";
+            if (document.getElementById(`img-${input.id}`)) {
+                document.getElementById(`img-${input.id}`).remove()
+            }
+        })
+    })
+    document.getElementById("register-form").appendChild(clearButton)
+}
+
+
+// taskForm saver from django render
+let taskFormElement
+if (document.getElementById("tab")) {
+    taskFormElement = document.getElementById("tab").cloneNode(true)
+    document.getElementById("tab").remove()
+
+}
 
 
 // get tasks function
@@ -9,62 +143,8 @@ function getTasksDB(requestParmaters){
 }
 
 
-// create task function
-function createTaskDB(){
-    let Task_Data = {
-        Name : document.getElementById("id_Name").value,
-        Date : document.getElementById("id_Date").value,
-        Category : document.getElementById("id_Category").value,
-        Tag : document.getElementById("id_Tag").value,
-        Description : document.getElementById("id_Description").value
-    }
-    let dataCheck = Object.values(Task_Data).slice(0,4)
-    for (let i = 0; i < dataCheck.length; i++) {
-        if (dataCheck[i]=="") {
-            if(document.getElementById("Create-task-message")){
-                document.getElementById("Create-task-message").remove();
-            }
-            message = document.createElement("div");
-            message.id = "Create-task-message";
-            message.innerHTML="Fill All Fields"
-            document.getElementById('create-element').appendChild(message);
-            return console.log("not valid");
-        } 
-    }
-    console.log(Task_Data);
-    axios.post(API_URL+"/create-task",{user_id:user_id,task:Task_Data, headers: {'Content-Type': 'application/json'}})
-    .then((response) => {
-        console.log(response.data);
-        if(document.getElementById("Create-task-message")){
-            document.getElementById("Create-task-message").remove();
-        }
-        message = document.createElement("div");
-        message.id = "Create-task-message";
-        message.innerHTML=response.data.detail;
-        document.getElementById('create-element').appendChild(message);
-        let taskFormInputs = Array.from(document.getElementById("create-element").getElementsByTagName('input'));
-        taskFormInputs.map((input)=>{input.value=""});
-        document.getElementById("id_Description").value="";
-        document.getElementById("id_Tag").value="";
-        requestData={user_id:user_id}
-        UpdateTableDB(requestData);
-    })
-}
-
-
-
-// delete task function
-function DeleteTask(list){
-    let taskIDList = Array.from(list);
-    axios.delete(API_URL+"/delete-task", { data: taskIDList })
-    .then((response) =>{
-        console.log(response.data);
-    })
-}
-
-
-// update table from DB function
-function UpdateTableDB(requestParmaters){
+// update table from DB
+function updateTableDB(requestParmaters){
     request = getTasksDB(requestParmaters);
     request.then((response) => {
         if (response.data.result!="No Data Found"){
@@ -81,7 +161,8 @@ function UpdateTableDB(requestParmaters){
     })
 }
 
-// build the table from tasks parameter
+
+// build the table from tasks list parameter
 function buildTable(tasks){
     let rows = Array.from(document.getElementsByTagName("tr"));
     for (let i = 1; i < rows.length; i++) {
@@ -117,39 +198,42 @@ function buildTable(tasks){
 }
 
 
-
 // table header sorter
 function tableHeaderSort(field,bool){
-    requestData={user_id:user_id};
+    let requestData={user_id:user_id};
     getTasksDB(requestData)
     .then((response)=>{
-        let tasks=Array.from(response.data.result);
-        if (field == 'Date') {
-            tasks.sort(function(a,b){
-                a = a["Date"].split("-").join("");
-                b = b["Date"].split("-").join("");
-                return a > b ? 1 : a < b ? -1 : 0;
-            })
-            
-        } else {
-            tasks.sort((i,j)=>(i[field].localeCompare(j[field])));
+        if (response.data.result!="No Data Found"){
+            let tasks=Array.from(response.data.result);
+            if (field == 'Date') {
+                tasks.sort(function(a,b){
+                    a = a["Date"].split("-").join("");
+                    b = b["Date"].split("-").join("");
+                    return a > b ? 1 : a < b ? -1 : 0;
+                })
+                
+            } else {
+                tasks.sort((i,j)=>(i[field].localeCompare(j[field])));
+            }
+            if (bool) {
+                buildTable(tasks);
+            } else {
+                buildTable(tasks.reverse());
+            }
         }
-        if (bool) {
-            buildTable(tasks);
-        } else {
-            buildTable(tasks.reverse());
-        }
-        
     })
 }
 
 
-// assign tableHeaderSort functions into th elements in table
+// assign tableHeaderSort function into th elements in table
 function tableHeaderSortAsign() {
     const tableHeaders = document.getElementsByTagName('th');
     Array.from(tableHeaders).map(th=>{
         let ascend = true;
         th.addEventListener('click',()=>{
+            if (document.getElementById("tab")) {
+                document.getElementById("tab").remove()
+            }
             if (ascend){
                 tableHeaderSort(th.innerText, true);
                 ascend = false;
@@ -162,15 +246,24 @@ function tableHeaderSortAsign() {
 }
 
 
+// delete task function
+function DeleteTask(list){
+    let taskIDList = Array.from(list);
+    axios.delete(API_URL+"/delete-task", { data: taskIDList })
+    .then((response) =>{
+        console.log(response.data);
+    })
+}
 
-// delete button function creation
+
+// delete button task-table
 function DeleteButton(){
     let deleteButton = document.createElement("button");
     deleteButton.innerHTML="Delete";
     deleteButton.id="delete-button";
     deleteButton.addEventListener('click',()=>{
         if (chosenTasks.size > 0){
-            if (confirm("Press a button!")){
+            if (confirm("Are You Sure?")){
                 DeleteTask(chosenTasks);
                 Array.from(chosenTasks).map((id)=>{
                     document.getElementById(id).remove();
@@ -187,105 +280,18 @@ function DeleteButton(){
 }
 
 
-
-
-// task-info tab creation:
-function taskInfoTab(task_id){
-    if (document.getElementById("task-info-tab")) {
-        document.getElementById("task-info-tab").remove();
-    }
-    let taskInfoTab = document.createElement("div");
-    taskInfoTab.id="task-info-tab";
-    let taskInfoTable = document.createElement("table");
-    taskInfoTable.id="task-tab-table";
-    let fields = ['Name','Date','Category','Tag','Description','Created_at','Updated_at'];
-    requestData={task_id:Number(task_id)};
-    getTasksDB(requestData).then((response)=>{
-        for (let i = 0; i < fields.length; i++) {
-            let tableRow = document.createElement("tr");
-            let collumnName = document.createElement("td");
-            if (fields[i] == 'Created_at'){
-                collumnName.innerHTML='Created at:';
-            } else if (fields[i] == 'Updated_at') {
-                collumnName.innerHTML='Updated at:';
-            } else {
-                collumnName.innerHTML=`${fields[i]}:`;
-            }
-            tableRow.appendChild(collumnName);
-            let task_data = document.createElement("td");
-            task_data.id=`task-tab-${fields[i]}`;
-            task_data.innerHTML=response.data.result[0][fields[i]];
-            tableRow.appendChild(task_data);
-            taskInfoTable.appendChild(tableRow);
-        }
-
-    })
-    taskInfoTab.appendChild(taskInfoTable);
-    document.body.appendChild(taskInfoTab);
-    taskInfoUpdateButton();
-    taskInfoDeleteButton(task_id);
-    taskInfoCancelButton();
-}
-
-
-
-// function clone create and put values inside
-
-
-
-// task-info tab update button
-let updateMode
-function taskInfoUpdateButton(){
-    let updateButton = document.createElement("button");
-    updateButton.innerHTML="Update";
-    updateButton.id="update-button";
-    updateButton.addEventListener('click',()=>{
-        console.log(updateButton);
-        
-    })
-    document.getElementById("task-info-tab").appendChild(updateButton);
-}
-
-
-// task-info tab delete button
-function taskInfoDeleteButton(task_id){
-    let deleteButton = document.createElement("button");
-    deleteButton.innerHTML="Delete";
-    deleteButton.id="delete-button";
-    deleteButton.addEventListener('click',()=>{
-        console.log(deleteButton);
-        if (confirm("Press a button!")){
-            DeleteTask([task_id]);
-        }
-        document.getElementById('task-info-tab').remove();
-        document.getElementById(task_id).remove();
-    })
-    document.getElementById("task-info-tab").appendChild(deleteButton);
-}
-
-
-// task-info tab cancel button
-function taskInfoCancelButton(){
-    let cancelButton = document.createElement("button");
-    cancelButton.innerHTML="Cancel";
-    cancelButton.id="cancel-button";
-    cancelButton.addEventListener('click',()=>{
-        console.log(cancelButton);
-        document.getElementById('task-info-tab').remove();
-    })
-    document.getElementById("task-info-tab").appendChild(cancelButton);
-}
-
-
 // select button creation
 let chosenTasks
 let selectMode
-function createSelectButton(){
+function selectButton(){
     let selectButton = document.createElement("button");
     selectButton.innerHTML="Select";
     selectButton.id="select-button";
     selectMode=false;
     selectButton.addEventListener('click',()=>{
+        if (document.getElementById("tab")) {
+            document.getElementById("tab").remove()
+        }
         if(selectMode){
             Array.from(chosenTasks).map(row_id=>{
                 document.getElementById(row_id).style.backgroundColor="";
@@ -305,18 +311,288 @@ function createSelectButton(){
 }
 
 
-// main function
-function Main(){
-    // task rows choosen set - for multiple delete
-    tableHeaderSortAsign();
-    requestData={user_id:user_id};
-    UpdateTableDB(requestData);
-    createSelectButton();
-    
-    // create button - post to api todo: !!!!! create with dom -----!!!!!
-    document.getElementById("Create_button").addEventListener("click",function(){
-        createTaskDB();
+// create task function to db api
+function createTaskDB(){
+    let Task_Data = {
+        Name : document.getElementById("id_Name").value,
+        Date : document.getElementById("id_Date").value,
+        Category : document.getElementById("id_Category").value,
+        Tag : document.getElementById("id_Tag").value,
+        Description : document.getElementById("id_Description").value
+    }
+    let dataCheck = Object.values(Task_Data).slice(0,4)
+    for (let i = 0; i < dataCheck.length; i++) {
+        if (dataCheck[i]=="") {
+            if(document.getElementById("Create-task-message")){
+                document.getElementById("Create-task-message").remove();
+            }
+            message = document.createElement("div");
+            message.id = "Create-task-message";
+            message.innerHTML="Fill All Fields"
+            document.getElementById('tab').appendChild(message);
+        } 
+    }
+    console.log(Task_Data);
+    axios.post(API_URL+"/create-task",{user_id:user_id,task:Task_Data, headers: {'Content-Type': 'application/json'}})
+    .then((response) => {
+        console.log(response.data);
+        if(document.getElementById("Create-task-message")){
+            document.getElementById("Create-task-message").remove();
+        }
+        message = document.createElement("div");
+        message.id = "Create-task-message";
+        message.innerHTML=response.data.detail;
+        document.getElementById('tab').appendChild(message);
+        document.getElementById("tab").remove()
+        let requestData={user_id:user_id}
+        updateTableDB(requestData);
     })
 }
 
-Main();
+
+// create button in task-tab
+function createTaskButton(){
+    let createButton = document.createElement('button');
+    createButton.id="create-task-button"
+    createButton.innerHTML="Create"
+    createButton.addEventListener('click',()=>{
+        createTaskDB()
+    })
+    document.getElementById("tab").appendChild(createButton)
+}
+
+
+// clear button in task-tab
+function clearTaskForm(){
+    let clearButton = document.createElement('button');
+    clearButton.id="create-clear-button"
+    clearButton.innerHTML="Clear"
+    clearButton.addEventListener('click',()=>{
+        let taskFormInputs = Array.from(document.getElementById("tab").getElementsByTagName('input'));
+        taskFormInputs.push(document.getElementById("id_Description"))
+        taskFormInputs.push(document.getElementById("id_Tag"))
+        taskFormInputs.map((input)=>{
+            input.value="";
+            if (document.getElementById(`img-${input.id}`)) {
+                document.getElementById(`img-${input.id}`).remove()
+            }
+        })
+    })
+    document.getElementById("tab").appendChild(clearButton)
+}
+
+
+// cancel button in task-tab
+function cancelTaskForm(){
+    let cancelButton = document.createElement('button');
+    cancelButton.id="create-cancel-button"
+    cancelButton.innerHTML="Cancel"
+    cancelButton.addEventListener('click',()=>{
+        if(document.getElementById("tab")){
+            document.getElementById("tab").remove()
+        }
+    })
+    document.getElementById("tab").appendChild(cancelButton)
+}
+
+
+// check task input validation
+function inputValidatorsForm(){
+    let taskFormInputs = Array.from(document.getElementById("tab").getElementsByTagName('input'));
+    taskFormInputs.push(document.getElementById("id_Tag"))
+    taskFormInputs.map((input)=>{
+        input.addEventListener('change',()=>{
+            if (input.value!="") {
+                if (document.getElementById(`img-${input.id}`)) {
+                    document.getElementById(`img-${input.id}`).remove()
+                }
+                let parent = input.parentElement;
+                let img = copyImg(`img-${input.id}`,true)
+                parent.appendChild(img)
+            }else{
+                if (document.getElementById(`img-${input.id}`)) {
+                    document.getElementById(`img-${input.id}`).remove()
+                }
+                let parent = input.parentElement;
+                let img = copyImg(`img-${input.id}`,false)
+                parent.appendChild(img)
+            }
+        })
+    })
+}
+
+
+function createTabDivForm() {
+    let copy = taskFormElement.cloneNode(true)
+    document.body.appendChild(copy)
+}
+
+
+// create task button on tasks-table
+function homeCreateButton(){
+    let createButton = document.createElement("button");
+    createButton.innerHTML="Create";
+    createButton.id="home-create-button";
+    createButton.addEventListener('click',()=>{
+        if (document.getElementById("tab")) {
+            document.getElementById("tab").remove()
+        }
+        createTabDivForm();
+        createTaskButton();
+        clearTaskForm();
+        cancelTaskForm();
+        inputValidatorsForm();    
+    })
+    document.getElementById("table-content").append(createButton);
+}
+
+
+// task-info tab delete button
+function taskInfoDeleteButton(task_id){
+    let deleteButton = document.createElement("button");
+    deleteButton.innerHTML="Delete";
+    deleteButton.id="delete-button";
+    deleteButton.addEventListener('click',()=>{
+        if (confirm("Are You Sure?")){
+            DeleteTask([task_id]);
+            document.getElementById('tab').remove();
+            document.getElementById(task_id).remove();
+        }
+        
+    })
+    document.getElementById("tab").appendChild(deleteButton);
+}
+
+
+// task-info tab cancel button
+function taskInfoCancelButton(){
+    let cancelButton = document.createElement("button");
+    cancelButton.innerHTML="Cancel";
+    cancelButton.id="cancel-button";
+    cancelButton.addEventListener('click',()=>{
+        document.getElementById('tab').remove();
+    })
+    document.getElementById("tab").appendChild(cancelButton);
+}
+
+
+// task-info tab creation:
+function taskInfoTab(task_id){
+    if (document.getElementById("tab")) {
+        document.getElementById("tab").remove();
+    }
+    let taskInfoTab = document.createElement("div");
+    taskInfoTab.id="tab";
+    let taskInfoTable = document.createElement("table");
+    taskInfoTable.id='task-tab-table';
+    let taskID = document.createElement("input")
+    taskID.id="task-id"
+    taskID.hidden="true"
+    let fields = ['Name','Date','Category','Tag','Description','Created_at','Updated_at'];
+    let requestData={task_id:Number(task_id)};
+    getTasksDB(requestData).then((response)=>{
+        taskID.value=response.data.result[0]["id"];
+        taskInfoTable.appendChild(taskID);
+        for (let i = 0; i < fields.length; i++) {
+            let tableRow = document.createElement("tr");
+            let collumnName = document.createElement("td");
+            if (fields[i] == 'Created_at'){
+                collumnName.innerHTML='Created at:';
+            } else if (fields[i] == 'Updated_at') {
+                collumnName.innerHTML='Updated at:';
+            } else {
+                collumnName.innerHTML=`${fields[i]}:`;
+            }
+            tableRow.appendChild(collumnName);
+            let task_data = document.createElement("td");
+            task_data.id=`task-tab-${fields[i]}`;
+            task_data.innerHTML=response.data.result[0][fields[i]];
+            tableRow.appendChild(task_data);
+            taskInfoTable.appendChild(tableRow);
+        }
+    })
+    taskInfoTab.appendChild(taskInfoTable);
+    document.body.appendChild(taskInfoTab);
+    taskInfoUpdateButton();
+    taskInfoDeleteButton(task_id);
+    taskInfoCancelButton();
+}
+
+// add user_id to form - hidden input
+function addUserIdForm(task_id){
+    let taskID = document.createElement("input")
+    taskID.id="id_id"
+    taskID.hidden="true"
+    taskID.value=task_id
+    document.getElementById("tab").appendChild(taskID)
+}
+
+// task-info tab update setup
+function createUpdateTab(){
+    let requestData={task_id:Number(document.getElementById("task-id").value)}
+    if (document.getElementById("tab")) {
+        document.getElementById("tab").remove()
+    }
+    createTabDivForm();
+    addUserIdForm();
+    clearTaskForm();
+    cancelTaskForm()
+    inputValidatorsForm()
+    getTasksDB(requestData)
+    .then(response=>{
+        let fields = ['id','Name','Date','Category','Tag','Description']
+        fields.map(field=>{
+            document.getElementById(`id_${field}`).value=response.data.result[0][field]
+        })
+    })
+}
+
+// task-info tab update button
+function taskInfoUpdateButton(){
+    let updateButton = document.createElement("button");
+    updateButton.innerHTML="Update";
+    updateButton.id="update-button";
+    updateButton.addEventListener('click',()=>{
+        createUpdateTab();
+        
+    })
+    document.getElementById("tab").appendChild(updateButton);
+}
+
+
+//task-info tab update save api function
+// let Task_Data = {
+//     id : document.getElementById(id_id).value,
+//     Name : document.getElementById("id_Name").value,
+//     Date : document.getElementById("id_Date").value,
+//     Category : document.getElementById("id_Category").value,
+//     Tag : document.getElementById("id_Tag").value,
+//     Description : document.getElementById("id_Description").value
+// }
+
+
+
+// home main function
+function mainHome(){
+    tableHeaderSortAsign();
+    let requestData={user_id:user_id};
+    updateTableDB(requestData);
+    selectButton();
+    homeCreateButton()
+    
+}
+
+
+// register main function
+function mainRegister(){
+    registerInputValidation();
+    registerClearButton()
+}
+
+
+// route main check
+if (window.location.href.split("/")[3] == "") {
+    mainHome();
+} else if (window.location.href.split("/")[3] == "register") {
+    mainRegister()
+}

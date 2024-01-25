@@ -1,9 +1,10 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
+from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.decorators import login_required
-from .forms import LoginForm,TaskModelForm
+from .forms import LoginForm,TaskModelForm,RegisterForm
 
 @login_required(login_url="/login")
 def home(request):
@@ -20,8 +21,28 @@ def login_view(request):
             if user:
                 login(request,user)
                 return redirect("home")
+        messages.error(request, 'Login Failed.')
         return redirect("login")
 
 def logout_view(request):
     logout(request)
     return redirect("login")
+
+def register_view(request):
+    if request.method == 'GET':
+        form = RegisterForm()
+        return render(request, 'Task_Manager_app/register.html', { 'form': form})  
+    if request.method == 'POST':
+        form = RegisterForm(request.POST) 
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.username = user.username.lower()
+            user.save()
+            messages.success(request, 'You have singed up successfully.')
+            login(request, user)
+            return redirect('home')
+        else:
+            messages.error(request, 'Error Creating Account. Try again.')
+            return redirect("register")
+    else:
+        return redirect("register")

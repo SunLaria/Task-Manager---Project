@@ -3,12 +3,18 @@
 {% block content %}
 
 <h1>Login</h1>
+<hr>
 <form action="" method="POST">
     {% csrf_token %} 
     {{ form.as_p }}
     <input type="submit" value="Login">
-    <a href="">Register</a>
 </form>
-
-
+<a href="{% url 'register' %}"><button>Register</button></a>
+{% if messages %}
+    <ul>
+        {% for message in messages %}
+        <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
 {% endblock %}

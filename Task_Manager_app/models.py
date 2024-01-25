@@ -13,10 +13,10 @@ class Category(models.Model):
         return f"{self.Name}"
 
 TAGS_CHOICES = (
-    ("high-priority", "High Priority"),
-    ("medium-priority", "Medium Priority"),
-    ("low-priority", "Low Priority"),
-    ("no-priority", "No Priority"),
+    ("High Priority", "High Priority"),
+    ("Medium Priority", "Medium Priority"),
+    ("Low Priority", "Low Priority"),
+    ("No Priority", "No Priority"),
 )
 
 
@@ -24,7 +24,7 @@ class Task(models.Model):
     Name = models.CharField(max_length=100)
     Date = models.DateField()
     Category = models.ForeignKey(Category,on_delete=models.CASCADE)
-    Tag = models.CharField(max_length=16,choices=TAGS_CHOICES, default="no-priority")
+    Tag = models.CharField(max_length=16,choices=TAGS_CHOICES, default="No Priority")
     Description = models.TextField(blank=True)
     Created_at = models.DateField(auto_now_add=True)
     Updated_at = models.DateField(auto_now=True)

@@ -1,5 +1,6 @@
 from django import forms	
 from django.forms import ModelForm
+from django.contrib.auth.forms import UserCreationForm
 from .models import Task, Category
 from django.contrib.auth.models import User
 from .fields import ListTextWidget
@@ -24,4 +25,17 @@ class TaskModelForm(ModelForm):
 		fields = ['Name','Date','Category','Tag','Description']
 		widgets = {'Date': forms.DateTimeInput(attrs={'type': 'Date'})}
 		
-		
+
+
+class RegisterForm(UserCreationForm):
+	class Meta():
+		model=User
+		fields = ['username','email','password1','password2']
+		widgets = {'username' : forms.TextInput(attrs={'minlength':"6",'maxlength':"30",'pattern':'[A-z]+'}),
+                    'email': forms.EmailInput(attrs={'pattern':'[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$'}),
+					'password1':forms.PasswordInput(attrs={'pattern':'[0-9a-fA-F]{4,8}','placeholder': 'Password'}),
+					'password2':forms.PasswordInput(attrs={'pattern':'[0-9a-fA-F]{4,8}'})}
+	
+
+# not working
+# Password Pattern = "(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,16}$"

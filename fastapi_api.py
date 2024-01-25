@@ -73,7 +73,7 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
 def create_task(user_id:Annotated[int,Body(ge=1,example=1)] ,task:Task_Schema):
     try:
         data=jsonable_encoder(task.model_dump(exclude_unset=True))     
-        new_task = Task(Name=data["Name"],Date=data["Date"],Category=User.objects.get(id=user_id).category_set.get_or_create(Name=data["Category"])[0],Tag=data["Tag"],Description=data["Description"],User=User.objects.get(id=user_id))
+        new_task = Task(Name=data["Name"].title(),Date=data["Date"],Category=User.objects.get(id=user_id).category_set.get_or_create(Name=data["Category"].title())[0],Tag=data["Tag"],Description=data["Description"].title(),User=User.objects.get(id=user_id))
         new_task.clean_fields()
         new_task.save()
         return JSONResponse(content={"detail":"Task Creation Successful"},status_code=status.HTTP_201_CREATED)
@@ -85,7 +85,7 @@ def update_task(user_id:Annotated[int,Body(ge=1,example=1)], task_id:Annotated[i
     try:
         update_data=jsonable_encoder(task.model_dump(exclude_unset=True)) 
         task_db=Task.objects.get(id=task_id)
-        [setattr(task_db, x, y) if x!="Category" else setattr(task_db, x, User.objects.get(id=user_id).category_set.get_or_create(Name=y)[0]) for x,y in update_data.items()]
+        [setattr(task_db, x, y.title()) if x!="Category" else setattr(task_db, x, User.objects.get(id=user_id).category_set.get_or_create(Name=y.title())[0]) for x,y in update_data.items()]
         task_db.save()
         return JSONResponse(content={"detail":"Task Update Successful"},status_code=status.HTTP_202_ACCEPTED)
     except:

@@ -1,5 +1,8 @@
 {% extends "./base.html" %}
 {% block content %}
+{% load static %}
+<img src="{% static 'Task_Manager_app\icons8-tick-48.png' %}" alt="" id="img-tick" width="19px" hidden>
+<img src="{% static 'Task_Manager_app\icons8-x-48.png' %}" alt="" id="img-x" width="19px" hidden>
 
 <h1>Task Manager</h1>
 <hr>
@@ -21,12 +24,7 @@
         </tr>
     </table>
 </div>
-<div id="create-element">
+<div id="tab">
     {{ form.as_p }}
-    <button id="Create_button">Create Task</button>
-</div>
-
-<div id="task-info-tab">
-
 </div>
 {% endblock %}
