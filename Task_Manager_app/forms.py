@@ -22,7 +22,7 @@ class TaskModelForm(ModelForm):
 		self.fields['Category'].widget = ListTextWidget(data_list=category_list, name='category_list')
 	class Meta():
 		model = Task
-		fields = ['Name','Date','Category','Tag','Description']
+		fields = ['Name','Date','Category','Tag','Description','User']
 		widgets = {'Date': forms.DateTimeInput(attrs={'type': 'Date'})}
 		
 
@@ -31,7 +31,7 @@ class RegisterForm(UserCreationForm):
 	class Meta():
 		model=User
 		fields = ['username','email','password1','password2']
-		widgets = {'username' : forms.TextInput(attrs={'minlength':"6",'maxlength':"30",'pattern':'[A-z]+'}),
+		widgets = {'username' : forms.TextInput(attrs={'minlength':"5",'maxlength':"30",'pattern':'[A-z]+'}),
                     'email': forms.EmailInput(attrs={'pattern':'[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$'}),
 					'password1':forms.PasswordInput(attrs={'pattern':'[0-9a-fA-F]{4,8}','placeholder': 'Password'}),
 					'password2':forms.PasswordInput(attrs={'pattern':'[0-9a-fA-F]{4,8}'})}

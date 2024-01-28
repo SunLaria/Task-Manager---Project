@@ -21,7 +21,7 @@ def login_view(request):
             if user:
                 login(request,user)
                 return redirect("home")
-        messages.error(request, 'Login Failed.')
+        messages.error(request, 'Login Failed')
         return redirect("login")
 
 def logout_view(request):
@@ -38,11 +38,11 @@ def register_view(request):
             user = form.save(commit=False)
             user.username = user.username.lower()
             user.save()
-            messages.success(request, 'You have singed up successfully.')
+            messages.success(request, 'You have singed up successfully')
             login(request, user)
             return redirect('home')
         else:
-            messages.error(request, 'Error Creating Account. Try again.')
+            messages.error(request, 'Error Creating Account, Try again')
             return redirect("register")
     else:
         return redirect("register")

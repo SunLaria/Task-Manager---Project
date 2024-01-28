@@ -1,39 +1,193 @@
 #main{
-    padding: 30px;    
+    padding: 30px; 
+    user-select: none;
+}
+
+#top-banner{
+    padding-top: 50px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: rgb(165, 162, 162);
 }
 
 #user_login_logout{
     position: absolute;
     right: 80px;
-    top: 80px
+    top: 5vh;
+}
+
+#content{
+    margin-top: 17vh;
 }
 
 /* table div */
 #table-content{
     width: 100%;
-    margin-top: 5%;
-    text-align: center;
+    text-align:left;
+
 }
 
 #Task-Table{
     text-align: center;
+    margin-left: 10vw;
     display: inline-block;
-    border: solid black;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    border-radius: 15px;
+    border-collapse: collapse;
 }
 
 #Task-Table th, #Task-Table td {
-    padding: 10px;
-    border: solid black;
+    padding-left: 30px;
+    padding-right: 30px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    font-size: medium;
     user-select: none;
     cursor: pointer;
 
 }
 
+
 #Task-Table tr:not(:first-child):hover{
-    background-color: grey;
+    background-color: rgb(211, 211, 211);
     cursor: pointer;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    border-radius: 15px;
 }
 
+
+#Task-Table tr:first-child{
+    background-color: rgb(168, 165, 165);
+    position: sticky;
+    top: 20vh;
+    box-shadow: rgba(44, 44, 44, 0.35) 0px 5px 15px;
+    border-radius: 15px;
+}
+
+
+#tab{
+    position: fixed;
+    right: 10vw;
+    bottom: 10vh;
+    font-size: larger;
+}
+
+#update-button, #Share-button, #tab-delete-button, #cancel-button{
+    position: relative;
+    margin-right: 5px;
+    top: 10px;
+    
+    
+}
+
+
 #task-tab-table{
-    border: solid black;
+    position: absolute;
+    font-size: large;
+    bottom: 5vh;
+    word-wrap: break-word;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    border-radius: 15px;
+    padding: 20px;
+    
+}
+
+
+/* task-info description */
+/* #task-tab-Description{
+    overflow-y:auto;
+    overflow-wrap: break-word;
+    height: 30px;
+    width: 100px;
+} */
+
+
+#task-tab-table td{
+    padding: 7px;
+}
+
+
+button, #login-button, #register-button{
+    appearance: none;
+    margin-bottom: 5px;
+    background-color: #FAFBFC;
+    border: 1px solid rgba(27, 31, 35, 0.15);
+    border-radius: 6px;
+    box-shadow: rgba(27, 31, 35, 0.04) 0 1px 0, rgba(255, 255, 255, 0.25) 0 1px 0 inset;
+    box-sizing: border-box;
+    color: #24292E;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 6px 16px;
+}
+
+button:hover, #login-button:hover, #register-button:hover{
+  background-color: #F3F4F6;
+  text-decoration: none;
+}
+
+#register-button:disabled{
+    background-color: #FAFBFC;
+    border-color: rgba(27, 31, 35, 0.15);
+    color: #959DA5;
+    cursor: default;
+}
+
+button:active {
+  background-color: #EDEFF2;
+  box-shadow: rgba(225, 228, 232, 0.2) 0 1px 0 inset;
+  transition: none 0s;
+}
+
+#select-button{
+    position: fixed;
+    top:33vh;
+    margin-left: 20px;
+}
+#table-delete-button{
+    position: fixed;
+    top:40vh;
+    margin-left: 20px;
+
+}
+#home-create-button{
+    position: fixed;
+    top:40vh;
+    margin-left: 20px;
+
+}
+#task-message{
+    position: absolute;
+    top: 60vh;
+    color: red;
+}
+
+.alert{
+    color: red;
+    margin-right: 35px;
+}
+#site-name{
+    user-select: none;
+    cursor: pointer;
+    margin-left: 10vw;
+}
+
+#login-div{
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    border-radius: 15px;
+    text-align: center;
+    margin-right: 35vw;
+    margin-left: 35vw;
+    padding-bottom: 10px;
+}
+
+#register-tab{
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    border-radius: 15px;
+    text-align: center;
+    margin-right: 35vw;
+    margin-left: 35vw;
+    padding-bottom: 10px;
 }

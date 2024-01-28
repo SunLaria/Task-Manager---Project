@@ -130,11 +130,11 @@ function registerClearButton(){
 
 // taskForm saver from django render
 let taskFormElement
-if (document.getElementById("tab")) {
-    taskFormElement = document.getElementById("tab").cloneNode(true)
+if (document.getElementById("tab")){
+   taskFormElement = document.getElementById("tab").cloneNode(true)
     document.getElementById("tab").remove()
-
 }
+
 
 
 // get tasks function
@@ -186,7 +186,7 @@ function buildTable(tasks){
                     table_row.style.backgroundColor="";
                 } else {
                     chosenTasks.add(Number(table_row.id));
-                    table_row.style.backgroundColor="grey";
+                    table_row.style.backgroundColor="rgb(211, 211, 211)";
                 }
             }
         })
@@ -260,7 +260,7 @@ function DeleteTask(list){
 function DeleteButton(){
     let deleteButton = document.createElement("button");
     deleteButton.innerHTML="Delete";
-    deleteButton.id="delete-button";
+    deleteButton.id="table-delete-button";
     deleteButton.addEventListener('click',()=>{
         if (chosenTasks.size > 0){
             if (confirm("Are You Sure?")){
@@ -268,11 +268,17 @@ function DeleteButton(){
                 Array.from(chosenTasks).map((id)=>{
                     document.getElementById(id).remove();
                 })
-                document.getElementById("delete-button").remove();
+                document.getElementById("table-delete-button").remove();
                 document.getElementById('select-button').innerHTML="Select";
                 selectMode = false;
                 chosenTasks = undefined;
-
+                let rows = Array.from(document.getElementsByTagName("tr"))
+                if (rows.length == 1) {
+                    let message = document.createElement("p");
+                    message.id="no-tasks-message";
+                    message.innerHTML="No Tasks";
+                    document.getElementById("Task-Table").appendChild(message);
+                }
             }
         }
     })
@@ -296,7 +302,7 @@ function selectButton(){
             Array.from(chosenTasks).map(row_id=>{
                 document.getElementById(row_id).style.backgroundColor="";
             })
-            document.getElementById("delete-button").remove();
+            document.getElementById("table-delete-button").remove();
             selectButton.innerHTML="Select";
             selectMode = false;
             chosenTasks = undefined;
@@ -322,31 +328,28 @@ function createTaskDB(){
     }
     let dataCheck = Object.values(Task_Data).slice(0,4)
     for (let i = 0; i < dataCheck.length; i++) {
-        if (dataCheck[i]=="") {
-            if(document.getElementById("Create-task-message")){
-                document.getElementById("Create-task-message").remove();
+        if (dataCheck[i].length == 0) {
+            if(document.getElementById("task-message")){
+                document.getElementById("task-message").remove();
             }
             message = document.createElement("div");
-            message.id = "Create-task-message";
+            message.id = "task-message";
             message.innerHTML="Fill All Fields"
             document.getElementById('tab').appendChild(message);
-        } 
+            console.log("Form Not Valid")
+            return false
+        }
     }
     console.log(Task_Data);
     axios.post(API_URL+"/create-task",{user_id:user_id,task:Task_Data, headers: {'Content-Type': 'application/json'}})
     .then((response) => {
         console.log(response.data);
-        if(document.getElementById("Create-task-message")){
-            document.getElementById("Create-task-message").remove();
+        if(document.getElementById("task-message")){
+            document.getElementById("task-message").remove();
         }
-        message = document.createElement("div");
-        message.id = "Create-task-message";
-        message.innerHTML=response.data.detail;
-        document.getElementById('tab').appendChild(message);
-        document.getElementById("tab").remove()
-        let requestData={user_id:user_id}
-        updateTableDB(requestData);
+        location.reload()
     })
+    
 }
 
 
@@ -398,7 +401,7 @@ function cancelTaskForm(){
 
 // check task input validation
 function inputValidatorsForm(){
-    let taskFormInputs = Array.from(document.getElementById("tab").getElementsByTagName('input'));
+    let taskFormInputs = Array.from(document.getElementById("tab").getElementsByTagName('input')).slice(0,3);
     taskFormInputs.push(document.getElementById("id_Tag"))
     taskFormInputs.map((input)=>{
         input.addEventListener('change',()=>{
@@ -424,6 +427,7 @@ function inputValidatorsForm(){
 
 function createTabDivForm() {
     let copy = taskFormElement.cloneNode(true)
+    copy.getElementsByTagName("p")[5].remove()
     document.body.appendChild(copy)
 }
 
@@ -451,14 +455,20 @@ function homeCreateButton(){
 function taskInfoDeleteButton(task_id){
     let deleteButton = document.createElement("button");
     deleteButton.innerHTML="Delete";
-    deleteButton.id="delete-button";
+    deleteButton.id="tab-delete-button";
     deleteButton.addEventListener('click',()=>{
         if (confirm("Are You Sure?")){
             DeleteTask([task_id]);
             document.getElementById('tab').remove();
             document.getElementById(task_id).remove();
         }
-        
+        let rows = Array.from(document.getElementsByTagName("tr"))
+                if (rows.length == 1) {
+                    let message = document.createElement("p");
+                    message.id="no-tasks-message";
+                    message.innerHTML="No Tasks";
+                    document.getElementById("Task-Table").appendChild(message);
+                }
     })
     document.getElementById("tab").appendChild(deleteButton);
 }
@@ -514,6 +524,7 @@ function taskInfoTab(task_id){
     taskInfoTab.appendChild(taskInfoTable);
     document.body.appendChild(taskInfoTab);
     taskInfoUpdateButton();
+    taskInfoShareButton()
     taskInfoDeleteButton(task_id);
     taskInfoCancelButton();
 }
@@ -527,6 +538,19 @@ function addUserIdForm(task_id){
     document.getElementById("tab").appendChild(taskID)
 }
 
+
+// save button in update-task-tab
+function saveTaskButton(){
+    let saveButton = document.createElement('button');
+    saveButton.id="save-task-button"
+    saveButton.innerHTML="Save"
+    saveButton.addEventListener('click',()=>{
+        updateTaskDB();
+    })
+    document.getElementById("tab").appendChild(saveButton)
+}
+
+
 // task-info tab update setup
 function createUpdateTab(){
     let requestData={task_id:Number(document.getElementById("task-id").value)}
@@ -535,9 +559,10 @@ function createUpdateTab(){
     }
     createTabDivForm();
     addUserIdForm();
+    saveTaskButton();
     clearTaskForm();
-    cancelTaskForm()
-    inputValidatorsForm()
+    cancelTaskForm();
+    inputValidatorsForm();
     getTasksDB(requestData)
     .then(response=>{
         let fields = ['id','Name','Date','Category','Tag','Description']
@@ -546,6 +571,62 @@ function createUpdateTab(){
         })
     })
 }
+
+
+// string to title case
+function titleCase(str) {
+    return str.toLowerCase().split(' ').map((word)=> {
+      return (word[0].toUpperCase() + word.slice(1));
+    }).join(' ');
+  }
+
+
+// update task function to db api
+let updateFormStatus
+function updateTaskDB(){
+    let task_id = document.getElementById("id_id").value
+    let Task_Data = {
+        Name : document.getElementById("id_Name").value,
+        Date : document.getElementById("id_Date").value,
+        Category : document.getElementById("id_Category").value,
+        Tag : document.getElementById("id_Tag").value,
+        Description : document.getElementById("id_Description").value
+    }
+    let dataCheck = Object.values(Task_Data).slice(0,4)
+    for (let i = 0; i < dataCheck.length; i++) {
+        if (dataCheck[i].length == 0) {
+            if(document.getElementById("task-message")){
+                document.getElementById("task-message").remove();
+            }
+            message = document.createElement("div");
+            message.id = "task-message";
+            message.innerHTML="Fill All Fields"
+            document.getElementById('tab').appendChild(message);
+            console.log("Form Not Valid")
+            return false
+        }
+    }
+    console.log(Task_Data);
+    axios.patch(API_URL+"/update-task",{user_id:user_id,task_id:task_id,task:Task_Data, headers: {'Content-Type': 'application/json'}})
+    .then((response) => {
+        console.log(response.data);
+        if(document.getElementById("task-message")){
+            document.getElementById("task-message").remove();
+        }
+        message = document.createElement("div");
+        message.id = "task-message";
+        message.innerHTML=response.data.detail;
+        document.getElementById('tab').appendChild(message);
+        document.getElementById("tab").remove()
+        let fields = ['Name','Date','Category','Tag']
+        let tableRow = Array.from(document.getElementById(task_id).getElementsByTagName("td"))
+        for (let i = 0; i < fields.length; i++) {
+            tableRow[i].innerHTML=titleCase(Task_Data[fields[i]]) 
+        }
+    })
+}
+
+
 
 // task-info tab update button
 function taskInfoUpdateButton(){
@@ -558,19 +639,35 @@ function taskInfoUpdateButton(){
     })
     document.getElementById("tab").appendChild(updateButton);
 }
+// taskFormElement
+// task-info share function api
+function taskInfoShareDB(){
+    console.log("hello")
+}
 
 
-//task-info tab update save api function
-// let Task_Data = {
-//     id : document.getElementById(id_id).value,
-//     Name : document.getElementById("id_Name").value,
-//     Date : document.getElementById("id_Date").value,
-//     Category : document.getElementById("id_Category").value,
-//     Tag : document.getElementById("id_Tag").value,
-//     Description : document.getElementById("id_Description").value
-// }
+// task info tab share button
+function taskInfoShareButton(){
+    let shareButton = document.createElement("button");
+    shareButton.innerHTML="Share";
+    shareButton.id="Share-button";
+    shareButton.addEventListener('click',()=>{
+        let formCopy = taskFormElement.cloneNode(true)
+        console.log(Array.from(formCopy))
+        document.getElementById("tab").appendChild(userInput);
+        console.log("share")
+    })
+    document.getElementById("tab").appendChild(shareButton);
+}
 
 
+function siteNameHref(){
+    document.getElementById("site-name").addEventListener('click',()=>{
+        window.location.replace("/")
+    })
+}
+
+siteNameHref();
 
 // home main function
 function mainHome(){

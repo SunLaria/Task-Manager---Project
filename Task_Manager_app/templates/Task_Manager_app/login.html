@@ -1,20 +1,21 @@
 {% extends "./base.html" %}
 
 {% block content %}
-
-<h1>Login</h1>
-<hr>
-<form action="" method="POST">
-    {% csrf_token %} 
-    {{ form.as_p }}
-    <input type="submit" value="Login">
-</form>
-<a href="{% url 'register' %}"><button>Register</button></a>
-{% if messages %}
-    <ul>
-        {% for message in messages %}
-        <li>{{ message }}</li>
-        {% endfor %}
-    </ul>
-{% endif %}
+<div id="login-div">
+    <h1>Login</h1>
+    <hr>
+    <form action="" method="POST">
+        {% csrf_token %} 
+        {{ form.as_p }}
+        <input type="submit" value="Login" id="login-button">
+    </form>
+    <a href="{% url 'register' %}"><button>Register</button></a>
+    {% if messages %}
+        <ul>
+            {% for message in messages %}
+            <p class="alert">{{ message }}</p>
+            {% endfor %}
+        </ul>
+    {% endif %}
+</div>
 {% endblock %}

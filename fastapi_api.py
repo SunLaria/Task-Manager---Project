@@ -28,7 +28,7 @@ class Task_Schema(BaseModel):
     Name: str | None = Field(default=None,max_length=100)
     Date: date | None = Field(default=None)
     Category : str |None = Field(default=None,max_length=100)
-    Tag: str |None = Field(default=None,max_length=16, examples=["high-priority","medium-priority","low-priority","no-priority"])
+    Tag: str |None = Field(default=None,max_length=16, examples=["High Priority","Medium Priority","Low Priority","No Priority"])
     Description : str | None = Field(default=None)
     Created_at : date | None = Field(default=None)
     Updated_at : date | None = Field(default=None)
@@ -40,7 +40,7 @@ class Task_Schema(BaseModel):
                 "Name": "Clean bad",
                 "Date": "2024-01-28",
                 "Category": "home",
-                "Tag": "high-priority",
+                "Tag": "High Priority",
                 "Description": "Asap"
                 }
             ]
@@ -113,16 +113,7 @@ def get_tasks(user_id:Annotated[int | None, Query(ge=1,example=1)] = None, task_
                 return {"result":"No Data Found"}
         except:
             raise HTTPException(status_code=status.HTTP_405_METHOD_NOT_ALLOWED, detail="Failed To Retrive Data From DB")
-    # elif user_id and tag:
-    #     try:
-    #         result = {"result":[i.to_dict() for i in Task.objects.filter(User=user_id,Tag=tag)]}
-    #         if len(result["result"]) > 0:
-    #             return result
-    #         else:
-    #             return {"result":"No Data Found"}
-    #     except:
-    #         raise HTTPException(status_code=status.HTTP_405_METHOD_NOT_ALLOWED, detail="Failed To Retrive Data From DB")
-   
+
     elif user_id:
         try:
             result = {"result":[i.to_dict() for i in Task.objects.filter(User=user_id)]}
@@ -134,3 +125,21 @@ def get_tasks(user_id:Annotated[int | None, Query(ge=1,example=1)] = None, task_
             raise HTTPException(status_code=status.HTTP_405_METHOD_NOT_ALLOWED, detail="Failed To Retrive Data From DB")
     else:
         raise HTTPException(status_code=status.HTTP_405_METHOD_NOT_ALLOWED, detail="Failed To Retrive Data From DB")
+    
+
+@app.get("/share-task",status_code=status.HTTP_202_ACCEPTED,tags=["Task"])
+def share_task(to_user_id:Annotated[int, Query(ge=1,example=1)], task_id:Annotated[int,Query(ge=1,example=1)]):
+    try:
+        task = Task.objects.get(id=task_id)
+        task.pk=None
+        if task.User != User.objects.get(id=to_user_id):
+            task.User = User.objects.get(id=to_user_id)
+            task.clean_fields()
+            task.save()
+            return JSONResponse(content={"detail":"Task shared"},status_code=status.HTTP_202_ACCEPTED)
+        else:
+            raise HTTPException(status_code=status.HTTP_405_METHOD_NOT_ALLOWED, detail="Cannot Share With Your Own User")
+    except:
+        raise HTTPException(status_code=status.HTTP_405_METHOD_NOT_ALLOWED, detail="Task Share Failed")
+    
+
