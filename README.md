@@ -14,7 +14,7 @@ How to build:
 - Run BOTH FastAPI and Django debug server 
 
 How to Use:
-- Create Task using button.
+- Create Task using Create Button.
 - Double click on task to see more details and options.
 
 WIP - Task Share option.
