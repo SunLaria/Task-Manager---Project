@@ -13,4 +13,4 @@ How to Use:
 - Create Task using button.
 - Double click on task to see more details and options.
 
-WIP - Task Share options
+WIP - Task Share option.
