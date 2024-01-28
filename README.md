@@ -8,7 +8,7 @@ How to build:
 - python ./manage.py makemigrations
 - python ./manage.py migrate
 - Run debug server Fastapi and Django
-*
+
 How to Use:
 -Create Task using button.
 - Double click on task to see more details and options.
