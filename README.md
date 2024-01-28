@@ -7,7 +7,7 @@ SPA Site written mainly in JS
 How to build:
 - python ./manage.py makemigrations
 - python ./manage.py migrate
-- Run debug server Fastapi and Django
+- Run BOTH FastAPI and Django debug server 
 
 How to Use:
 - Create Task using button.
