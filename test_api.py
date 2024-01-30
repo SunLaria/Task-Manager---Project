@@ -59,7 +59,7 @@ def test_update():
 # trouble testing multiple times as it deletes the task. the test is working.
 def test_delete():
     data = [28]
-    data_not_exist=[1]
+    data_not_exist=[1000000]
     data_error=["ds"]
     # delete
     assert requests.delete(url=url+"/delete-task",json=data).json()["detail"]=="Task Delete Succesfull"
