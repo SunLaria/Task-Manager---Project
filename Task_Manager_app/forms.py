@@ -32,7 +32,7 @@ class RegisterForm(UserCreationForm):
 		model=User
 		fields = ['username','email','password1','password2']
 		widgets = {'username' : forms.TextInput(attrs={'minlength':"5",'maxlength':"30",'pattern':'[A-z]+'}),
-                    'email': forms.EmailInput(attrs={'pattern':'[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$'}),
+                    'email': forms.EmailInput(attrs={'pattern':'[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[a-z]{2,}$'}),
 					'password1':forms.PasswordInput(attrs={'pattern':'[0-9a-fA-F]{4,8}','placeholder': 'Password'}),
 					'password2':forms.PasswordInput(attrs={'pattern':'[0-9a-fA-F]{4,8}'})}
 	

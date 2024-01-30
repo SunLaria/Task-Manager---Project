@@ -1,4 +1,6 @@
 from django import forms
+from django.utils.safestring import mark_safe
+
 
 
 class ListTextWidget(forms.TextInput):
@@ -15,4 +17,4 @@ class ListTextWidget(forms.TextInput):
             data_list += f'<option value="{item["Name"]}">{item["Name"]}</option>'
         data_list += '</datalist>'
 
-        return (text_html + data_list)
+        return mark_safe(text_html + data_list)
