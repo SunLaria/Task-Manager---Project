@@ -643,6 +643,7 @@ function taskInfoUpdateButton(){
     })
     document.getElementById("tab").appendChild(updateButton);
 }
+
 // taskFormElement
 // task-info share function api
 function taskInfoShareDB(){
@@ -670,8 +671,42 @@ function siteNameHref(){
         window.location.replace("/")
     })
 }
-
 siteNameHref();
+
+
+function searchEvent(){
+    let searchBar = document.createElement("input")
+    searchBar.id="task-search-bar"
+    searchBar.placeholder="Search Something..."
+    searchBar.addEventListener("input",()=>{
+        let params = {user_id:user_id}
+        getTasksDB(params)
+        .then((response)=>{
+            let tasksFromDB = response.data.result
+            if (tasksFromDB != 0) {
+                let tasks = []
+                for (let i = 0; i < tasksFromDB.length; i++) {
+                    if (Object.values(tasksFromDB[i]).includes(searchBar.value)) {
+                        tasks.push(tasksFromDB[i])
+                    }
+                }
+                if (tasks.length > 0) {
+                    buildTable(tasks)
+                } 
+                if (searchBar.value=="") {
+                    let params = {user_id:user_id}
+                    getTasksDB(params)
+                    .then((response)=>{
+                        let tasks = response.data.result
+                        buildTable(tasks)
+                })
+                }
+            }
+        })
+    })
+    document.body.appendChild(searchBar)
+}
+
 
 // home main function
 function mainHome(){
@@ -680,6 +715,7 @@ function mainHome(){
     updateTableDB(requestData);
     selectButton();
     homeCreateButton()
+    searchEvent()
     
 }
 

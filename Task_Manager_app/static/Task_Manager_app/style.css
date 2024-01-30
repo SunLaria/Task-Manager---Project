@@ -19,7 +19,7 @@
 }
 
 #content{
-    margin-top: 17vh;
+    margin-top: 16vh;
     display: flex;
     flex-direction: row;
     gap: 5vw;
@@ -196,4 +196,11 @@ button:active {
 
 #create-task-button, #create-clear-button, #create-cancel-button{
     margin-left: 10px;
+}
+
+#task-search-bar{
+    border-radius: 5px;
+    position: fixed;
+    top: 20vh;
+    left: 37.5vw;
 }

@@ -2,32 +2,36 @@ Task Manager Project.
 
 Dango Framework.
 
-FastAPI for api CRUD using djnago ORM database funtions.
+FastAPI For API CRUD Using Djnago ORM Database Funtions.
 
-No Django Password Validators, currently for production use.
+No Django Password Validators, Currently For Production Use.
 
-SPA Site written mainly in JS.
+SPA Site Written Mainly In JS.
 
-How to build:
+How To Build:
 - pip install -r requirements.txt
-- Run BOTH FastAPI and Django debug server, with the configurations provided.
+- Run BOTH FastAPI and Django debug server Using The Pre-built Configurations Provided for VSCode.
 
 How to test API:
-- Djnago db task_id is ++1 after each task creation.
+- Djnago DB task_id Is ++1 After Each Task Creation.
 - Admin User = admin:admin
-- You can test Create, Read, Update, Delete functions
-- Test Creates Task, Update the Task, Read The Task, Then delete the task.
-- You can run test_api using pytest once, beacuse the next task will be task_id=2 (it can be configured in test_api.py file). 
+- You Can Test Create, Read, Update, Delete Functions
+- Test Creates Task, Update The Task, Read The Task, Then Delete The Task.
+- You Should Run test_api Using pytest Once, Beacuse The Next Task Will be task_id=2 (it can be configured in test_api.py file). 
+- You Can Go Into "http://localhost:7000/docs" To See More Information Regarding Task API, Inside This Project.
+
 
 
 How to Use:
 - Admin User = admin:admin
-- Complex Validators in Register, login Routes And in Create, Update Task Tab.
-- Create Task using Create Button
-- Double click on task to see more details and options such ass: Delete, Update
-- Task Table can be sorted while clicking specific headers.
-- You can select multiple tasks to delete from the Tasks Table.
-- User Past Categories are provided in category input you can choose or else you can create a new one.
+- http://localhost:8000/admin For Django Admin DB Management.
+- Complex Validators In Register, Login Routes And In Create, Update Task Tab.
+- Create Task Using Create Button
+- Double Click On Task To See More Details And Options Such As: Delete, Update
+- Task Table Can Be Sorted While Clicking Specific Headers.
+- Search Bar For All Fields, By Searching Full Names Only, Example - "High Priority"
+- You Can Select Multiple Tasks To Delete From The Tasks Table.
+- Task Category Input Include User Past Categories Or Else You Can Enter A New One.
 
 
 WIP - Task Share option.
