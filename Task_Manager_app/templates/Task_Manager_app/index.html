@@ -3,27 +3,28 @@
 {% load static %}
 <img src="{% static 'Task_Manager_app\icons8-tick-48.png' %}" alt="" id="img-tick" width="19px" hidden>
 <img src="{% static 'Task_Manager_app\icons8-x-48.png' %}" alt="" id="img-x" width="19px" hidden>
+    <div id="table-content">
+        <table id="Task-Table">
+            <tr>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Date
+                </th>
+                <th>
+                    Category
+                </th>
+                <th>
+                    Tag
+                </th>
+            </tr>
+        </table>
+        <div id="buttons">
 
-
-<div id="table-content">
-    <table id="Task-Table">
-        <tr>
-            <th>
-                Name
-            </th>
-            <th>
-                Date
-            </th>
-            <th>
-                Category
-            </th>
-            <th>
-                Tag
-            </th>
-        </tr>
-    </table>
-</div>
-<div id="tab">
-    {{ form.as_p }}
-</div>
+        </div>
+    </div>
+    <div id="tab">
+        {{ form.as_p }}
+    </div>
 {% endblock %}

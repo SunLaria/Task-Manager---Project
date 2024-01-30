@@ -20,21 +20,22 @@
 
 #content{
     margin-top: 17vh;
+    display: flex;
+    flex-direction: row;
+    gap: 5vw;
 }
 
-/* table div */
-#table-content{
-    width: 100%;
-    text-align:left;
 
+#content-main{
+    display: flex;
+    flex-direction: row;
 }
+
 
 #Task-Table{
     text-align: center;
     margin-left: 10vw;
-    display: inline-block;
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
-    border-radius: 15px;
     border-collapse: collapse;
 }
 
@@ -46,7 +47,6 @@
     font-size: medium;
     user-select: none;
     cursor: pointer;
-
 }
 
 
@@ -54,7 +54,6 @@
     background-color: rgb(211, 211, 211);
     cursor: pointer;
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
-    border-radius: 15px;
 }
 
 
@@ -63,49 +62,48 @@
     position: sticky;
     top: 20vh;
     box-shadow: rgba(44, 44, 44, 0.35) 0px 5px 15px;
-    border-radius: 15px;
 }
 
+
+tr:last-child {
+  border-radius: 10px 0 10px 0;
+}
+
+
+tr:first-child {
+  border-radius: 0 10px 10px 0;
+
+}
 
 #tab{
-    position: fixed;
-    right: 10vw;
-    bottom: 10vh;
-    font-size: larger;
-}
-
-#update-button, #Share-button, #tab-delete-button, #cancel-button{
-    position: relative;
-    margin-right: 5px;
-    top: 10px;
-    
-    
-}
-
-
-#task-tab-table{
-    position: absolute;
     font-size: large;
-    bottom: 5vh;
     word-wrap: break-word;
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
     border-radius: 15px;
     padding: 20px;
-    
+    margin-bottom: 10px;
+    margin-top: 10px;
+    padding-left: 40px;
+    position: fixed;
+    left: 60vw;
 }
 
+#update-button, #Share-button, #tab-delete-button, #cancel-button{
+    margin-right: 10px;
+}
 
-/* task-info description */
-/* #task-tab-Description{
-    overflow-y:auto;
-    overflow-wrap: break-word;
-    height: 30px;
-    width: 100px;
-} */
-
+#create-form{
+    display: block;
+    font-size: large;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 10px;
+}
 
 #task-tab-table td{
     padding: 7px;
+    margin-bottom: 10px;
 }
 
 
@@ -141,23 +139,24 @@ button:active {
   transition: none 0s;
 }
 
-#select-button{
+#buttons{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
     position: fixed;
-    top:33vh;
-    margin-left: 20px;
+    left: 50vw;
 }
+
 #table-delete-button{
-    position: fixed;
-    top:40vh;
-    margin-left: 20px;
-
+    position: relative;
+    bottom: 40px;
 }
-#home-create-button{
-    position: fixed;
-    top:40vh;
-    margin-left: 20px;
 
+#table-content{
+    display: flex;
+    flex-direction: row;
 }
+
 #task-message{
     position: absolute;
     top: 60vh;
@@ -190,4 +189,8 @@ button:active {
     margin-right: 35vw;
     margin-left: 35vw;
     padding-bottom: 10px;
+}
+
+#create-task-button, #create-clear-button, #create-cancel-button{
+    margin-left: 10px;
 }

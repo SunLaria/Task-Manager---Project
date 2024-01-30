@@ -4,7 +4,6 @@ API_URL = "http://127.0.0.1:7000";
 const user_id = JSON.parse(document.getElementById('user_id').textContent);
 
 
-
 // copy img functions, return element
 function copyImg(id,bool){
     if (bool) {
@@ -153,13 +152,21 @@ function updateTableDB(requestParmaters){
             }
             buildTable(response.data.result);
         } else {
-            let message = document.createElement("p");
-            message.id="no-tasks-message";
-            message.innerHTML="No Tasks";
-            document.getElementById("Task-Table").appendChild(message);
+            createEmptyMessage()
         }
     })
 }
+
+
+function createEmptyMessage() {
+    let messageTableRow = document.createElement("tr")
+    let message = document.createElement("td");
+    message.id="no-tasks-message";
+    message.innerHTML="No Tasks";
+    message.colSpan=4
+    document.getElementById("Task-Table").appendChild(message);
+}
+
 
 
 // build the table from tasks list parameter
@@ -274,15 +281,12 @@ function DeleteButton(){
                 chosenTasks = undefined;
                 let rows = Array.from(document.getElementsByTagName("tr"))
                 if (rows.length == 1) {
-                    let message = document.createElement("p");
-                    message.id="no-tasks-message";
-                    message.innerHTML="No Tasks";
-                    document.getElementById("Task-Table").appendChild(message);
+                    createEmptyMessage()
                 }
             }
         }
     })
-    document.getElementById("table-content").append(deleteButton);
+    document.getElementById("buttons").append(deleteButton);
 }
 
 
@@ -313,7 +317,7 @@ function selectButton(){
             selectMode = true;
         }
     })
-    document.getElementById("table-content").append(selectButton);
+    document.getElementById("buttons").append(selectButton);
 }
 
 
@@ -428,7 +432,7 @@ function inputValidatorsForm(){
 function createTabDivForm() {
     let copy = taskFormElement.cloneNode(true)
     copy.getElementsByTagName("p")[5].remove()
-    document.body.appendChild(copy)
+    document.getElementById("content").appendChild(copy)
 }
 
 
@@ -447,7 +451,7 @@ function homeCreateButton(){
         cancelTaskForm();
         inputValidatorsForm();    
     })
-    document.getElementById("table-content").append(createButton);
+    document.getElementById("buttons").append(createButton);
 }
 
 
@@ -464,10 +468,7 @@ function taskInfoDeleteButton(task_id){
         }
         let rows = Array.from(document.getElementsByTagName("tr"))
                 if (rows.length == 1) {
-                    let message = document.createElement("p");
-                    message.id="no-tasks-message";
-                    message.innerHTML="No Tasks";
-                    document.getElementById("Task-Table").appendChild(message);
+                    createEmptyMessage()
                 }
     })
     document.getElementById("tab").appendChild(deleteButton);
@@ -495,6 +496,8 @@ function taskInfoTab(task_id){
     taskInfoTab.id="tab";
     let taskInfoTable = document.createElement("table");
     taskInfoTable.id='task-tab-table';
+    let taskInfotbody = document.createElement("tbody")
+    taskInfotbody.id = "task-tab-tbody"
     let taskID = document.createElement("input")
     taskID.id="task-id"
     taskID.hidden="true"
@@ -502,7 +505,7 @@ function taskInfoTab(task_id){
     let requestData={task_id:Number(task_id)};
     getTasksDB(requestData).then((response)=>{
         taskID.value=response.data.result[0]["id"];
-        taskInfoTable.appendChild(taskID);
+        taskInfotbody.appendChild(taskID);
         for (let i = 0; i < fields.length; i++) {
             let tableRow = document.createElement("tr");
             let collumnName = document.createElement("td");
@@ -518,11 +521,12 @@ function taskInfoTab(task_id){
             task_data.id=`task-tab-${fields[i]}`;
             task_data.innerHTML=response.data.result[0][fields[i]];
             tableRow.appendChild(task_data);
-            taskInfoTable.appendChild(tableRow);
+            taskInfotbody.appendChild(tableRow);
         }
     })
+    taskInfoTable.appendChild(taskInfotbody)
     taskInfoTab.appendChild(taskInfoTable);
-    document.body.appendChild(taskInfoTab);
+    document.getElementById("content").appendChild(taskInfoTab);
     taskInfoUpdateButton();
     taskInfoShareButton()
     taskInfoDeleteButton(task_id);
