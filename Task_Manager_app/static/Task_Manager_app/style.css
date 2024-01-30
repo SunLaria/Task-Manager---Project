@@ -25,6 +25,9 @@
     gap: 5vw;
 }
 
+#content:has(#login-div), #content:has(#register-tab){
+    display: block;
+}
 
 #content-main{
     display: flex;
