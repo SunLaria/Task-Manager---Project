@@ -32,6 +32,3 @@ How to Use:
 - Search Bar For All Fields, By Searching Full Names Only, Example - "High Priority"
 - You Can Select Multiple Tasks To Delete From The Tasks Table.
 - Task Category Input Include User Past Categories Or Else You Can Enter A New One.
-
-
-WIP - Task Share option.
