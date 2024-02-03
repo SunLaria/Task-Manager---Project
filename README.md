@@ -28,7 +28,7 @@ How to Use:
 - Complex Validators In Register, Login Routes And In Create, Update Task Tab.
 - Create Task Using Create Button
 - Double Click On Task To See More Details And Options Such As: Delete, Update
-- Task Table Can Be Sorted While Clicking Specific Headers.
+- Tasks Table Can Be Sorted While Clicking Specific Headers.
 - Search Bar For All Fields, By Searching Full Names Only, Example - "High Priority"
 - You Can Select Multiple Tasks To Delete From The Tasks Table.
 - Task Category Input Include User Past Categories Or Else You Can Enter A New One.
