@@ -16,5 +16,4 @@ class ListTextWidget(forms.TextInput):
         for item in self.list:
             data_list += f'<option value="{item["Name"]}">{item["Name"]}</option>'
         data_list += '</datalist>'
-
         return mark_safe(text_html + data_list)

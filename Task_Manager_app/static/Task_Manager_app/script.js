@@ -10,12 +10,12 @@ function copyImg(id,bool){
         let img = document.getElementById('img-tick').cloneNode(true);
         img.id = id;
         img.hidden=false;
-        return img
+        return img;
     } else {
         let img = document.getElementById('img-x').cloneNode(true);
         img.id = id;
         img.hidden=false;
-        return img
+        return img;
     }
 }
 
@@ -23,12 +23,12 @@ function copyImg(id,bool){
 function passwordValidation(field){
     if (field == 'id_password1' || "id_password2"){
         if (document.getElementById("id_password1").value == document.getElementById("id_password2")) {
-            return true
+            return true;
         } else {
-            return false
+            return false;
         }
     } else {
-        return true
+        return true;
     }
 }
 
@@ -75,9 +75,9 @@ function registerInputValidation(){
                  }
             }
             if(input.value==""){
-                notEmpty=false
+                notEmpty=false;
             }else{
-                notEmpty=true
+                notEmpty=true;
             }
             if (input.checkValidity() && passMatch && notEmpty){
                     if (document.getElementById(`img-${input.id}`)){
@@ -89,22 +89,22 @@ function registerInputValidation(){
                 if (document.getElementById(`img-${input.id}`)){
                     document.getElementById(`img-${input.id}`).remove();
                 }
-                let img = copyImg(`img-${input.id}`,false)
+                let img = copyImg(`img-${input.id}`,false);
                 input.parentElement.appendChild(img);
             }
             if (input.id == "id_password1") {
                 if (document.getElementById("img-id_password2")){
                     if (input.getAttribute('src')!="/Task_Manager_app/static/Task_Manager_app/icons8-tick-48.png"){
                         if (document.getElementById("img-id_password2")){
-                            let imgParent = document.getElementById("img-id_password2").parentElement
+                            let imgParent = document.getElementById("img-id_password2").parentElement;
                             document.getElementById("img-id_password2").remove();
-                            let img = copyImg("img-id_password2",false)
+                            let img = copyImg("img-id_password2",false);
                             imgParent.appendChild(img);
                         }   
                     }
                 }
             }
-            checkRegisterInputs()
+            checkRegisterInputs();
         })
     })
 }
@@ -112,33 +112,33 @@ function registerInputValidation(){
 // create register form clear button 
 function registerClearButton(){
     let clearButton = document.createElement('button');
-    clearButton.id="register-clear-button"
-    clearButton.innerHTML="Clear"
+    clearButton.id="register-clear-button";
+    clearButton.innerHTML="Clear";
     clearButton.addEventListener('click',()=>{
         const register_inputs = Array.from(document.getElementById("register-form")).slice(1,5);
         register_inputs.map((input)=>{
             input.value="";
             if (document.getElementById(`img-${input.id}`)) {
-                document.getElementById(`img-${input.id}`).remove()
+                document.getElementById(`img-${input.id}`).remove();
             }
         })
     })
-    document.getElementById("register-form").appendChild(clearButton)
+    document.getElementById("register-form").appendChild(clearButton);
 }
 
 
 // taskForm saver from django render
-let taskFormElement
+let taskFormElement;
 if (document.getElementById("tab")){
-   taskFormElement = document.getElementById("tab").cloneNode(true)
-    document.getElementById("tab").remove()
+   taskFormElement = document.getElementById("tab").cloneNode(true);
+    document.getElementById("tab").remove();
 }
 
 
 
 // get tasks function
 function getTasksDB(requestParmaters){
-    return axios.get(API_URL+"/read-task",{ params: requestParmaters , headers: {'Content-Type': 'application/json'}})
+    return axios.get(API_URL+"/read-task",{ params: requestParmaters , headers: {'Content-Type': 'application/json'}});
 }
 
 
@@ -152,18 +152,17 @@ function updateTableDB(requestParmaters){
             }
             buildTable(response.data.result);
         } else {
-            createEmptyMessage()
+            createEmptyMessage();
         }
     })
 }
 
 
 function createEmptyMessage() {
-    let messageTableRow = document.createElement("tr")
     let message = document.createElement("td");
     message.id="no-tasks-message";
     message.innerHTML="No Tasks";
-    message.colSpan=4
+    message.colSpan=4;
     document.getElementById("Task-Table").appendChild(message);
 }
 
@@ -239,7 +238,7 @@ function tableHeaderSortAsign() {
         let ascend = true;
         th.addEventListener('click',()=>{
             if (document.getElementById("tab")) {
-                document.getElementById("tab").remove()
+                document.getElementById("tab").remove();
             }
             if (ascend){
                 tableHeaderSort(th.innerText, true);
@@ -279,9 +278,9 @@ function DeleteButton(){
                 document.getElementById('select-button').innerHTML="Select";
                 selectMode = false;
                 chosenTasks = undefined;
-                let rows = Array.from(document.getElementsByTagName("tr"))
+                let rows = Array.from(document.getElementsByTagName("tr"));
                 if (rows.length == 1) {
-                    createEmptyMessage()
+                    createEmptyMessage();
                 }
             }
         }
@@ -291,8 +290,8 @@ function DeleteButton(){
 
 
 // select button creation
-let chosenTasks
-let selectMode
+let chosenTasks;
+let selectMode;
 function selectButton(){
     let selectButton = document.createElement("button");
     selectButton.innerHTML="Select";
@@ -300,7 +299,7 @@ function selectButton(){
     selectMode=false;
     selectButton.addEventListener('click',()=>{
         if (document.getElementById("tab")) {
-            document.getElementById("tab").remove()
+            document.getElementById("tab").remove();
         }
         if(selectMode){
             Array.from(chosenTasks).map(row_id=>{
@@ -330,7 +329,7 @@ function createTaskDB(){
         Tag : document.getElementById("id_Tag").value,
         Description : document.getElementById("id_Description").value
     }
-    let dataCheck = Object.values(Task_Data).slice(0,4)
+    let dataCheck = Object.values(Task_Data).slice(0,4);
     for (let i = 0; i < dataCheck.length; i++) {
         if (dataCheck[i].length == 0) {
             if(document.getElementById("task-message")){
@@ -338,20 +337,19 @@ function createTaskDB(){
             }
             message = document.createElement("div");
             message.id = "task-message";
-            message.innerHTML="Fill All Fields"
+            message.innerHTML="Fill All Fields";
             document.getElementById('tab').appendChild(message);
-            console.log("Form Not Valid")
-            return false
+            console.log("Form Not Valid");
+            return false;
         }
     }
-    console.log(Task_Data);
     axios.post(API_URL+"/create-task",{user_id:user_id,task:Task_Data, headers: {'Content-Type': 'application/json'}})
     .then((response) => {
         console.log(response.data);
         if(document.getElementById("task-message")){
             document.getElementById("task-message").remove();
         }
-        location.reload()
+        location.reload();
     })
     
 }
@@ -360,69 +358,69 @@ function createTaskDB(){
 // create button in task-tab
 function createTaskButton(){
     let createButton = document.createElement('button');
-    createButton.id="create-task-button"
-    createButton.innerHTML="Create"
+    createButton.id="create-task-button";
+    createButton.innerHTML="Create";
     createButton.addEventListener('click',()=>{
-        createTaskDB()
+        createTaskDB();
     })
-    document.getElementById("tab").appendChild(createButton)
+    document.getElementById("tab").appendChild(createButton);
 }
 
 
 // clear button in task-tab
 function clearTaskForm(){
     let clearButton = document.createElement('button');
-    clearButton.id="create-clear-button"
-    clearButton.innerHTML="Clear"
+    clearButton.id="create-clear-button";
+    clearButton.innerHTML="Clear";
     clearButton.addEventListener('click',()=>{
         let taskFormInputs = Array.from(document.getElementById("tab").getElementsByTagName('input'));
-        taskFormInputs.push(document.getElementById("id_Description"))
-        taskFormInputs.push(document.getElementById("id_Tag"))
+        taskFormInputs.push(document.getElementById("id_Description"));
+        taskFormInputs.push(document.getElementById("id_Tag"));
         taskFormInputs.map((input)=>{
             input.value="";
             if (document.getElementById(`img-${input.id}`)) {
-                document.getElementById(`img-${input.id}`).remove()
+                document.getElementById(`img-${input.id}`).remove();
             }
         })
     })
-    document.getElementById("tab").appendChild(clearButton)
+    document.getElementById("tab").appendChild(clearButton);
 }
 
 
 // cancel button in task-tab
 function cancelTaskForm(){
     let cancelButton = document.createElement('button');
-    cancelButton.id="create-cancel-button"
-    cancelButton.innerHTML="Cancel"
+    cancelButton.id="create-cancel-button";
+    cancelButton.innerHTML="Cancel";
     cancelButton.addEventListener('click',()=>{
         if(document.getElementById("tab")){
-            document.getElementById("tab").remove()
+            document.getElementById("tab").remove();
         }
     })
-    document.getElementById("tab").appendChild(cancelButton)
+    document.getElementById("tab").appendChild(cancelButton);
 }
 
 
 // check task input validation
 function inputValidatorsForm(){
     let taskFormInputs = Array.from(document.getElementById("tab").getElementsByTagName('input')).slice(0,3);
-    taskFormInputs.push(document.getElementById("id_Tag"))
+    taskFormInputs.push(document.getElementById("id_Tag"));
     taskFormInputs.map((input)=>{
         input.addEventListener('change',()=>{
             if (input.value!="") {
                 if (document.getElementById(`img-${input.id}`)) {
-                    document.getElementById(`img-${input.id}`).remove()
+                    document.getElementById(`img-${input.id}`).remove();
                 }
                 let parent = input.parentElement;
-                let img = copyImg(`img-${input.id}`,true)
-                parent.appendChild(img)
+                let img = copyImg(`img-${input.id}`,true);
+                parent.appendChild(img);
             }else{
                 if (document.getElementById(`img-${input.id}`)) {
-                    document.getElementById(`img-${input.id}`).remove()
+                    document.getElementById(`img-${input.id}`).remove();
                 }
                 let parent = input.parentElement;
-                let img = copyImg(`img-${input.id}`,false)
-                parent.appendChild(img)
+                let img = copyImg(`img-${input.id}`,false);
+                parent.appendChild(img);
             }
         })
     })
@@ -430,9 +428,9 @@ function inputValidatorsForm(){
 
 
 function createTabDivForm() {
-    let copy = taskFormElement.cloneNode(true)
-    copy.getElementsByTagName("p")[5].remove()
-    document.getElementById("content").appendChild(copy)
+    let copy = taskFormElement.cloneNode(true);
+    copy.getElementsByTagName("p")[5].remove();
+    document.getElementById("content").appendChild(copy);
 }
 
 
@@ -443,7 +441,7 @@ function homeCreateButton(){
     createButton.id="home-create-button";
     createButton.addEventListener('click',()=>{
         if (document.getElementById("tab")) {
-            document.getElementById("tab").remove()
+            document.getElementById("tab").remove();
         }
         createTabDivForm();
         createTaskButton();
@@ -466,9 +464,9 @@ function taskInfoDeleteButton(task_id){
             document.getElementById('tab').remove();
             document.getElementById(task_id).remove();
         }
-        let rows = Array.from(document.getElementsByTagName("tr"))
+        let rows = Array.from(document.getElementsByTagName("tr"));
                 if (rows.length == 1) {
-                    createEmptyMessage()
+                    createEmptyMessage();
                 }
     })
     document.getElementById("tab").appendChild(deleteButton);
@@ -496,11 +494,11 @@ function taskInfoTab(task_id){
     taskInfoTab.id="tab";
     let taskInfoTable = document.createElement("table");
     taskInfoTable.id='task-tab-table';
-    let taskInfotbody = document.createElement("tbody")
-    taskInfotbody.id = "task-tab-tbody"
-    let taskID = document.createElement("input")
-    taskID.id="task-id"
-    taskID.hidden="true"
+    let taskInfotbody = document.createElement("tbody");
+    taskInfotbody.id = "task-tab-tbody";
+    let taskID = document.createElement("input");
+    taskID.id="task-id";
+    taskID.hidden="true";
     let fields = ['Name','Date','Category','Tag','Description','Created_at','Updated_at'];
     let requestData={task_id:Number(task_id)};
     getTasksDB(requestData).then((response)=>{
@@ -524,42 +522,42 @@ function taskInfoTab(task_id){
             taskInfotbody.appendChild(tableRow);
         }
     })
-    taskInfoTable.appendChild(taskInfotbody)
+    taskInfoTable.appendChild(taskInfotbody);
     taskInfoTab.appendChild(taskInfoTable);
     document.getElementById("content").appendChild(taskInfoTab);
     taskInfoUpdateButton();
-    taskInfoShareButton()
+    // taskInfoShareButton()
     taskInfoDeleteButton(task_id);
     taskInfoCancelButton();
 }
 
 // add user_id to form - hidden input
 function addUserIdForm(task_id){
-    let taskID = document.createElement("input")
-    taskID.id="id_id"
-    taskID.hidden="true"
-    taskID.value=task_id
-    document.getElementById("tab").appendChild(taskID)
+    let taskID = document.createElement("input");
+    taskID.id="id_id";
+    taskID.hidden="true";
+    taskID.value=task_id;
+    document.getElementById("tab").appendChild(taskID);
 }
 
 
 // save button in update-task-tab
 function saveTaskButton(){
     let saveButton = document.createElement('button');
-    saveButton.id="save-task-button"
-    saveButton.innerHTML="Save"
+    saveButton.id="save-task-button";
+    saveButton.innerHTML="Save";
     saveButton.addEventListener('click',()=>{
         updateTaskDB();
     })
-    document.getElementById("tab").appendChild(saveButton)
+    document.getElementById("tab").appendChild(saveButton);
 }
 
 
 // task-info tab update setup
 function createUpdateTab(){
-    let requestData={task_id:Number(document.getElementById("task-id").value)}
+    let requestData={task_id:Number(document.getElementById("task-id").value)};
     if (document.getElementById("tab")) {
-        document.getElementById("tab").remove()
+        document.getElementById("tab").remove();
     }
     createTabDivForm();
     addUserIdForm();
@@ -569,9 +567,9 @@ function createUpdateTab(){
     inputValidatorsForm();
     getTasksDB(requestData)
     .then(response=>{
-        let fields = ['id','Name','Date','Category','Tag','Description']
+        let fields = ['id','Name','Date','Category','Tag','Description'];
         fields.map(field=>{
-            document.getElementById(`id_${field}`).value=response.data.result[0][field]
+            document.getElementById(`id_${field}`).value=response.data.result[0][field];
         })
     })
 }
@@ -588,7 +586,7 @@ function titleCase(str) {
 // update task function to db api
 let updateFormStatus
 function updateTaskDB(){
-    let task_id = document.getElementById("id_id").value
+    let task_id = document.getElementById("id_id").value;
     let Task_Data = {
         Name : document.getElementById("id_Name").value,
         Date : document.getElementById("id_Date").value,
@@ -596,7 +594,7 @@ function updateTaskDB(){
         Tag : document.getElementById("id_Tag").value,
         Description : document.getElementById("id_Description").value
     }
-    let dataCheck = Object.values(Task_Data).slice(0,4)
+    let dataCheck = Object.values(Task_Data).slice(0,4);
     for (let i = 0; i < dataCheck.length; i++) {
         if (dataCheck[i].length == 0) {
             if(document.getElementById("task-message")){
@@ -604,16 +602,14 @@ function updateTaskDB(){
             }
             message = document.createElement("div");
             message.id = "task-message";
-            message.innerHTML="Fill All Fields"
+            message.innerHTML="Fill All Fields";
             document.getElementById('tab').appendChild(message);
             console.log("Form Not Valid")
-            return false
+            return false;
         }
     }
-    console.log(Task_Data);
     axios.patch(API_URL+"/update-task",{user_id:user_id,task_id:task_id,task:Task_Data, headers: {'Content-Type': 'application/json'}})
     .then((response) => {
-        console.log(response.data);
         if(document.getElementById("task-message")){
             document.getElementById("task-message").remove();
         }
@@ -621,11 +617,11 @@ function updateTaskDB(){
         message.id = "task-message";
         message.innerHTML=response.data.detail;
         document.getElementById('tab').appendChild(message);
-        document.getElementById("tab").remove()
-        let fields = ['Name','Date','Category','Tag']
-        let tableRow = Array.from(document.getElementById(task_id).getElementsByTagName("td"))
+        document.getElementById("tab").remove();
+        let fields = ['Name','Date','Category','Tag'];
+        let tableRow = Array.from(document.getElementById(task_id).getElementsByTagName("td"));
         for (let i = 0; i < fields.length; i++) {
-            tableRow[i].innerHTML=titleCase(Task_Data[fields[i]]) 
+            tableRow[i].innerHTML=titleCase(Task_Data[fields[i]]);
         }
     })
 }
@@ -644,67 +640,69 @@ function taskInfoUpdateButton(){
     document.getElementById("tab").appendChild(updateButton);
 }
 
-// taskFormElement
+// taskFormElement 
 // task-info share function api
-function taskInfoShareDB(){
-    console.log("hello")
-}
+// function taskInfoShareDB(){
+//     console.log("hello")
+// }
 
 
-// task info tab share button
-function taskInfoShareButton(){
-    let shareButton = document.createElement("button");
-    shareButton.innerHTML="Share";
-    shareButton.id="Share-button";
-    shareButton.addEventListener('click',()=>{
-        let formCopy = taskFormElement.cloneNode(true)
-        console.log(Array.from(formCopy))
-        document.getElementById("tab").appendChild(userInput);
-        console.log("share")
-    })
-    document.getElementById("tab").appendChild(shareButton);
-}
+// // task info tab share button -- not implanted
+// function taskInfoShareButton(){
+//     let shareButton = document.createElement("button");
+//     shareButton.innerHTML="Share";
+//     shareButton.id="Share-button";
+//     shareButton.addEventListener('click',()=>{
+//         let formCopy = taskFormElement.cloneNode(true)
+//         console.log(Array.from(formCopy))
+//         document.getElementById("tab").appendChild(userInput);
+//         console.log("share")
+//     })
+//     document.getElementById("tab").appendChild(shareButton);
+// }
 
 
+// site logo - home click event
 function siteNameHref(){
     document.getElementById("site-name").addEventListener('click',()=>{
-        window.location.replace("/")
+        window.location.replace("/");
     })
 }
 siteNameHref();
 
 
+// search-bar event
 function searchEvent(){
-    let searchBar = document.createElement("input")
-    searchBar.id="task-search-bar"
-    searchBar.placeholder="Search Something..."
+    let searchBar = document.createElement("input");
+    searchBar.id="task-search-bar";
+    searchBar.placeholder="Search Something...";
     searchBar.addEventListener("input",()=>{
-        let params = {user_id:user_id}
+        let params = {user_id:user_id};
         getTasksDB(params)
         .then((response)=>{
-            let tasksFromDB = response.data.result
+            let tasksFromDB = response.data.result;
             if (tasksFromDB != 0) {
-                let tasks = []
+                let tasks = [];
                 for (let i = 0; i < tasksFromDB.length; i++) {
                     if (Object.values(tasksFromDB[i]).includes(searchBar.value)) {
-                        tasks.push(tasksFromDB[i])
+                        tasks.push(tasksFromDB[i]);
                     }
                 }
                 if (tasks.length > 0) {
-                    buildTable(tasks)
+                    buildTable(tasks);
                 } 
                 if (searchBar.value=="") {
-                    let params = {user_id:user_id}
+                    let params = {user_id:user_id};
                     getTasksDB(params)
                     .then((response)=>{
-                        let tasks = response.data.result
-                        buildTable(tasks)
+                        let tasks = response.data.result;
+                        buildTable(tasks);
                 })
                 }
             }
         })
     })
-    document.body.appendChild(searchBar)
+    document.body.appendChild(searchBar);
 }
 
 
@@ -714,8 +712,8 @@ function mainHome(){
     let requestData={user_id:user_id};
     updateTableDB(requestData);
     selectButton();
-    homeCreateButton()
-    searchEvent()
+    homeCreateButton();
+    searchEvent();
     
 }
 
@@ -723,7 +721,7 @@ function mainHome(){
 // register main function
 function mainRegister(){
     registerInputValidation();
-    registerClearButton()
+    registerClearButton();
 }
 
 
@@ -731,5 +729,5 @@ function mainRegister(){
 if (window.location.href.split("/")[3] == "") {
     mainHome();
 } else if (window.location.href.split("/")[3] == "register") {
-    mainRegister()
+    mainRegister();
 }
