@@ -640,27 +640,6 @@ function taskInfoUpdateButton(){
     document.getElementById("tab").appendChild(updateButton);
 }
 
-// taskFormElement 
-// task-info share function api
-// function taskInfoShareDB(){
-//     console.log("hello")
-// }
-
-
-// // task info tab share button -- not implanted
-// function taskInfoShareButton(){
-//     let shareButton = document.createElement("button");
-//     shareButton.innerHTML="Share";
-//     shareButton.id="Share-button";
-//     shareButton.addEventListener('click',()=>{
-//         let formCopy = taskFormElement.cloneNode(true)
-//         console.log(Array.from(formCopy))
-//         document.getElementById("tab").appendChild(userInput);
-//         console.log("share")
-//     })
-//     document.getElementById("tab").appendChild(shareButton);
-// }
-
 
 // site logo - home click event
 function siteNameHref(){
