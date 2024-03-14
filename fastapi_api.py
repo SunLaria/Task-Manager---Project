@@ -12,9 +12,7 @@ from datetime import date
 from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse 
-from django import db
-from django.http import JsonResponse as DjangoJsonResponse
-from Task_Manager_app.models import Task, Category
+from Task_Manager_app.models import Task
 from django.contrib.auth.models import User
 from starlette.middleware.cors import CORSMiddleware
 
@@ -46,11 +44,7 @@ class Task_Schema(BaseModel):
 
 app = FastAPI(title="Task Api",description="The API I Made For Task Manager")
 
-origins = [
-    "http://localhost:*",
-    "http://localhost:8000",
-    "http://localhost:7000",
-]
+origins = ["*"]
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],

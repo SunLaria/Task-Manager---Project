@@ -14,8 +14,6 @@ ENV PYTHONUNBUFFERED=1
 COPY requirements.txt .
 RUN python -m pip install -r requirements.txt
 
-COPY Taskmanager/settings.py ./Taskmanager/settings.py
-
 WORKDIR /app
 COPY . /app
 
