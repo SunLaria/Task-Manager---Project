@@ -1,0 +1,18 @@
+version: '4'
+volumes:
+  shared-app:
+services:
+  django:
+    image: docker.io/randomg1/task-manager-app:1
+    ports:
+      - "8000:8000"
+    volumes:
+      - shared-app:/app
+
+  fastapi:
+    image: docker.io/randomg1/task-manager-app-api:1
+    ports:
+      - "7000:7000"
+    volumes:
+      - shared-app:/app
+    
