@@ -1,0 +1,32 @@
+version: '4'
+
+services:
+  django:
+    # image: docker.io/randomg1/task-manager-app:1 
+    image: task-manager-app:1
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+
+  fastapi:
+    # image: docker.io/randomg1/task-manager-app-api:1
+    image: task-manager-app-api:1
+    ports:
+      - "7000:7000" 
+    # environment:
+    #   SQLALCHEMY_DATABASE_URL: postgresql://postgres:123456@postgres/postgres
+    depends_on:
+      - postgres
+      
+
+  postgres:
+    image: postgres
+    ports:
+      - "5432:5432"
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456
+      # POSTGRES_HOST: 0.0.0.0
+      POSTGRES_DB: postgres
