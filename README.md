@@ -55,6 +55,7 @@ localy:
 git clone https://github.com/SunLaria/Task-Manager-App.git
 cd Task-Manager-App
 python -m pip install -r requirements.txt
+code .
 ```
 - Run both FastAPI and Django debug servers using the pre-built configurations provided for VSCode.
 
