@@ -1,4 +1,4 @@
-API_URL = "http://127.0.0.1:7000";
+API_URL = "http://localhost:7000";
 
 // user_id from django render
 const user_id = JSON.parse(document.getElementById('user_id').textContent);
