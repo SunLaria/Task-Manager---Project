@@ -22,7 +22,7 @@ Save Your Notes
 ## How To Setup 
 Docker-compose:
 ```
-git clone https://github.com/SunLaria/Task-Manager-App.git
+git clone https://github.com/SunLaria/Task-Manager-App-project2.git
 cd Task-Manager-App
 docker-compose up -d # start
 docker-compose down # stop
@@ -52,7 +52,7 @@ services:
 
 localy:
 ```
-git clone https://github.com/SunLaria/Task-Manager-App.git
+git clone https://github.com/SunLaria/Task-Manager-App-project2.git
 cd Task-Manager-App
 python -m pip install -r requirements.txt
 code .
