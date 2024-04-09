@@ -1,6 +1,6 @@
 # Task Manager Project
 
-Save Your Notes
+Save Your Tasks
 
 ## Usage Instructions
 - Admin User credentials: admin:admin
